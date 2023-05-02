@@ -80,12 +80,12 @@ def parse_wardley_map(map_text):
             else:
                 label = ""
 
-            components.append({"name": name, "description": "", "evolution": stage, "visibility": visibility, "positionxy": new_c_xy, "labelxy": label})
+            components.append({"name": name, "desc": "", "evolution": stage, "visibility": visibility, "pos": new_c_xy, "labelpos": label})
 
         elif line.startswith("pipeline"):
             new_c_xy = swap_xy(line)
             name = line[line.find(' ') + 1:line.find('[')].strip()
-            pipelines.append({"name": name, "description": "", "positionxy": new_c_xy, "labelxy": ""})
+            pipelines.append({"name": name, "desc": "", "pos": new_c_xy, "labelpos": ""})
 
         elif line.startswith("links"):
             links.append(line)
@@ -99,7 +99,7 @@ def parse_wardley_map(map_text):
             else:
                 label = ""
             label = swap_xy(label)
-            evolve.append({"name": name, "description": "", "positionxy": new_c_xy, "labelxy": label})
+            evolve.append({"name": name, "desc": "", "pos": new_c_xy, "labelpos": label})
 
         elif line.startswith("pioneer"):          
             pioneers.append(line)
@@ -111,17 +111,18 @@ def parse_wardley_map(map_text):
                 new_c_xy = swap_xy(line)
             else:
                 new_c_xy = ""
-            notes.append({"name": name, "description": "", "positionxy": new_c_xy, "labelxy": ""})   
+            notes.append({"name": name, "desc": "", "pos": new_c_xy, "labelpos": ""})   
                   
         elif line.startswith("annotations"):
             new_c_xy = swap_xy(line)
-            annotations.append({"name": line, "description": "", "positionxy": new_c_xy})
+            annotations.append({"name": line, "desc": "", "pos": new_c_xy})
+            continue
 
         elif line.startswith("annotation"):
             new_c_xy = swap_xy(line)
             number = re.findall(r'\d+', line)
             name = line[line.index(']')+1:].lstrip()
-            annotations.append({"number": number[0], "name": name, "description": "", "positionxy": new_c_xy})
+            annotations.append({"number": number[0], "name": name, "desc": "", "pos": new_c_xy})
 
         elif line.startswith("market"):
             name = line[line.find(' ') + 1:line.find('[')].strip()
@@ -132,7 +133,7 @@ def parse_wardley_map(map_text):
             else:
                 label = ""
             label = swap_xy(label)
-            market.append({"name": name, "description": "", "positionxy": new_c_xy, "labelxy": label})
+            market.append({"name": name, "desc": "", "pos": new_c_xy, "labelpos": label})
 
         elif line.startswith("style"):
             style.append(line)
@@ -141,7 +142,7 @@ def parse_wardley_map(map_text):
             source, target = line.strip().split("->")
             source = source.strip()
             target = target.strip()
-            links.append({"source": source, "target": target})
+            links.append({"src": source, "tgt": target})
         else:
             continue
 
@@ -291,13 +292,9 @@ elif selected == "WM to JSON":
     if response.status_code == 200:
         map_data = response.json()
         wardley_map_text = map_data['text']
-
-# Parse the Wardley map text
+        
+        # Parse the Wardley map text
         parsed_map = parse_wardley_map(wardley_map_text)
-
-
-# Print the JSON
-        print(parsed_map)
         
         # Convert the parsed map to JSON
         wardley_map_json = json.dumps(parsed_map, indent=2)
