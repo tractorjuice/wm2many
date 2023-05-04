@@ -1,8 +1,7 @@
 import streamlit as st
+from streamlit_option_menu import option_menu
 import json
 import toml
-import streamlit as st
-from streamlit_option_menu import option_menu
 
 from ast import Index
 import json
