@@ -30,18 +30,21 @@ Access the application through your web browser using the provided URL (typicall
 
 Choose the desired conversion option from the sidebar:
 
-JSON to TOML: Converts a JSON file to TOML format.
-WM to TOML: Converts a Wardley Map in WM format to TOML.
-WM to JSON: Converts a Wardley Map in WM format to JSON.
-Follow the instructions and upload the required files or enter the necessary information to perform the conversion.
+- JSON to TOML: Converts a JSON file to TOML format.
+- WM to TOML: Converts a Wardley Map in WM format to TOML.
+- WM to JSON: Converts a Wardley Map in WM format to JSON.
+- Follow the instructions and upload the required files or enter the necessary information to perform the conversion.
 
 Once the conversion is complete, you can view the converted content and download the resulting file in the specified format.
 
-Notes
-The application utilizes the streamlit_option_menu library for creating dropdown menus with icons.
-The parse_wardley_map function is used to parse the Wardley Map text and extract relevant information.
-The swap_xy function swaps the x and y coordinates in a given format.
-The application uses the Streamlit library to create the user interface and handle file uploads and downloads.
-Conversion between JSON and TOML formats is performed using the json and toml libraries, respectively.
-The application makes use of the requests library to fetch Wardley Maps from the onlinewardleymaps.com API.
+## Notes
+
+- The application utilizes the `streamlit_option_menu` library for creating dropdown menus with icons.
+- The `parse_wardley_map` function is used to parse the Wardley Map text and extract relevant information.
+- The `swap_xy` function swaps the x and y coordinates in a given format.
+- The application uses the Streamlit library to create the user interface and handle file uploads and downloads.
+- Conversion between JSON and TOML formats is performed using the `json` and `toml` libraries, respectively.
+- The application makes use of the `requests` library to fetch Wardley Maps from the onlinewardleymaps.com API.
+
 Feel free to explore the code and adapt it to your needs. Happy coding!
+Please let me know if there's anything else I can assist you with!
