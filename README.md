@@ -11,22 +11,6 @@ Clone the repository to your local machine:
 bash
 Copy code
 git clone https://github.com/your-username/code-converter.git
-Navigate to the project directory:
-
-bash
-Copy code
-cd code-converter
-Install the required dependencies:
-
-Copy code
-pip install -r requirements.txt
-Usage
-Run the Streamlit application:
-
-arduino
-Copy code
-streamlit run app.py
-Access the application through your web browser using the provided URL (typically http://localhost:8501).
 
 Choose the desired conversion option from the sidebar:
 
