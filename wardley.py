@@ -19,12 +19,73 @@ class WardleyMap:
         """
         
         # Assuming owm is a dictionary object with all the required keys
+        UNTITLED_MAP = "Untitled Map"
         self.title = owm.get('title', '')
         self.edges = owm.get('edges', [])
         self.nodes = owm.get('nodes', {})
         self.warnings = []
         # insert additional attributes as per your original code here...
-        
+    
+        self.logger = logging.getLogger(self.__class__.__name__)
+        self.mapTitle = None
+        self.uid = Id()
+        self.mapElements = {}
+    
+    def setMapTitle(self, title):
+        if self.mapTitle is not None:
+            self.logger.info(f"Map title already set! Replacing '{self.mapTitle.value()}' with '{title}'")
+        self.mapTitle = Name.of(title)
+    
+    def addAnchor(self, name, visibility, evolution):
+        anchorName = Name.of(name)
+        anchorVisibility = VisibilityLevel(visibility)
+        anchorEvolution = EvolutionLevel.of(evolution)
+        anchor = Anchor(anchorName, anchorVisibility, anchorEvolution)
+        self.mapElements[anchorName] = anchor
+    
+    def addComponent(self, name, visibility, evolution):
+        componentName = Name.of(name)
+        componentVisibility = VisibilityLevel(visibility)
+        componentEvolution = EvolutionLevel.of(evolution)
+        component = Component(componentName, componentVisibility, componentEvolution)
+        self.mapElements[componentName] = component
+        return component
+    
+    def addLink(self, f, t):
+        from_name = Name.of(f)
+        to_name = Name.of(t)
+        linkFrom = self.getComponent(from_name).orElseThrow(lambda: MapSemanticsViolated(f"Cannot create link for undeclared Component '{f}'"))
+        linkTo = self.getComponent(to_name).orElseThrow(lambda: MapSemanticsViolated(f"Cannot create link for undeclared Component '{t}'"))
+        link = Link(linkFrom, linkTo)
+        self.mapElements[link.deriveName()] = link
+    
+    def evolveComponent(self, componentName, evolutionLevel):
+        componentBase = self.getComponent(Name.of(componentName)).orElseThrow(lambda: MapSemanticsViolated(f"Cannot evolve undeclared Component{componentName}"))
+        if not isinstance(componentBase, Component):
+            raise MapSemanticsViolated(f"Cannot evolve Component: {componentBase}")
+        origin = componentBase
+        evoLevel = EvolutionLevel.of(evolutionLevel)
+        evolvedComponent = EvolvedComponent(origin, evoLevel)
+        movement = Movement(origin, evolvedComponent)
+        origin.addMovement(movement)
+        evolvedComponent.addMovement(movement)
+        self.mapElements[evolvedComponent.deriveName()] = evolvedComponent
+    
+    def getComponent(self, name):
+        if isinstance(name, str):
+            name = Name.of(name)
+        element = self.mapElements.get(name)
+        return Optional.of(element) if isinstance(element, ComponentBase) else Optional.empty()
+    
+    def getName(self):
+        return Name.of(self.UNTITLED_MAP) if self.mapTitle is None else self.mapTitle
+    
+    def getMapElements(self):
+        return self.mapElements.copy()
+    
+    def getId(self):
+        return self.uid
+    
     def parse_map(self, owm)
         # Defaults:
         self.title = None
