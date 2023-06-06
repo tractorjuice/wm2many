@@ -361,3 +361,12 @@ def svg_write(fig, center=True):
 
     # Write the HTML
     st.write(html, unsafe_allow_html=True)
+
+def dfs(map, start, visited=None):
+    if visited is None:
+        visited = set()
+    visited.add(start)
+    for link in map['links']:
+        if link['src'] == start and link['tgt'] not in visited:
+            dfs(map, link['tgt'], visited)
+    return visited
