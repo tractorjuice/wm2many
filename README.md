@@ -1,4 +1,4 @@
-# owm2json
+# wm2json
 This repository contains a code converter application built using Streamlit. The application allows you to convert JSON files to TOML format and also convert Wardley Maps in different formats to either JSON or TOML.
 
 [![Twitter Follow](https://img.shields.io/twitter/follow/mcraddock?style=social)](https://twitter.com/mcraddock)
