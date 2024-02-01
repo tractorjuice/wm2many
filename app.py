@@ -341,7 +341,7 @@ elif selected == "WM to GRAPH":
 
         # Display the JSON string
         st.write("Graph in JSON format:")
-        st.json(graph_json_str)  # Streamlit's st.json displays JSON strings nicely
+        st.code(graph_json_str, language="json")
 
         # Add a download button for the JSON file
         st.download_button(label="Download Graph JSON",
