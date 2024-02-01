@@ -4,6 +4,9 @@ import requests, re, json, toml
 from ast import Index
 import networkx as nx
 from networkx.readwrite import json_graph
+from pyvis.network import Network
+import streamlit.components.v1 as components
+
 
 def swap_xy(xy):
   new_xy = re.findall("\[(.*?)\]", xy)
@@ -307,7 +310,7 @@ elif selected == "WM to GRAPH":
     st.title("WM to GRAPH Converter")
     st.write(
         """
-    Let's convert your Wardley Map in WM to GRAPH and then to JSON
+    Let's convert your Wardley Map in WM to GRAPH and visualize it.
             """
     )
 
@@ -335,19 +338,29 @@ elif selected == "WM to GRAPH":
         for link in parsed_map["links"]:
             G.add_edge(link["src"], link["tgt"])
 
-        # Convert the graph to a JSON format
+        # Initialize a PyVis network and add nodes and edges from the NetworkX graph
+        net = Network(height="750px", width="100%", bgcolor="#222222", font_color="white")
+        for node, node_attrs in G.nodes(data=True):
+            net.add_node(node, label=node, title=str(node_attrs), color="#f68b24" if node_attrs.get('type', '') == 'component' else "#16a085")
+        for source, target in G.edges():
+            net.add_edge(source, target)
+
+        # Generate the network in HTML and display
+        net.show("graph.html")
+        HtmlFile = open("graph.html", 'r', encoding='utf-8')
+        source_code = HtmlFile.read() 
+        components.html(source_code, height=800)
+
+        # Convert the graph to a JSON format for download
         graph_json = json_graph.node_link_data(G)  # Convert the graph to a JSON-compatible dict
         graph_json_str = json.dumps(graph_json, indent=2)  # Convert the dict to a pretty-printed JSON string
-
-        # Display the JSON string
-        st.write("JSON FILE CONTENT")
-        st.code(graph_json_str, language="json")
 
         # Add a download button for the JSON file
         st.download_button(label="Download Graph JSON",
                            data=graph_json_str,
                            file_name="graph.json",
                            mime="application/json")
+
 
 elif selected == "WM to CYPHER":
     st.title("WM to CYPHER Converter")
