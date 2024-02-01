@@ -340,7 +340,7 @@ elif selected == "WM to GRAPH":
         graph_json_str = json.dumps(graph_json, indent=2)  # Convert the dict to a pretty-printed JSON string
 
         # Display the JSON string
-        st.write("Graph in JSON format:")
+        st.write("JSON FILE CONTENT")
         st.code(graph_json_str, language="json")
 
         # Add a download button for the JSON file
@@ -387,6 +387,7 @@ elif selected == "WM to CYPHER":
         cypher_script = "\n".join(cypher_queries)
 
         # Display Cypher script
+        st.write("CYPHER FILE CONTENT")
         st.code(cypher_script, language="cypher")
 
         # Add a download button for the Cypher script
