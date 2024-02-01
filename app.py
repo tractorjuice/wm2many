@@ -152,25 +152,25 @@ def parse_wardley_map(map_text):
         else:
             continue
           
-  # Once all components and pipelines are parsed, determine which components fall within each pipeline
-  for pipeline in pipelines:
-      pipeline_x = pipeline["x"]  # Left side of the bounding box
-      pipeline_right_side = pipeline["y"]  # Right side of the bounding box
-      
-      # Find the matching component to get the y position for the vertical position of the pipeline
-      matching_component = next((comp for comp in components if comp["name"] == pipeline["name"]), None)
-      if matching_component:
-          _, pipeline_bottom = json.loads(matching_component["pos"])  # This is the bottom side of the pipeline's bounding box
-          pipeline_top = pipeline_bottom + 10  # Assuming the bounding box is 10 units high
-  
-          # Check each component to see if it falls within the pipeline's bounding box
-          for component in components:
-              comp_pos_str = component.get("pos", "[0, 0]")
-              comp_x, comp_y = json.loads(comp_pos_str)  # Extract x, y position of the component
-              
-              # Check if the component's position falls within the pipeline's bounding box
-              if pipeline_x <= comp_x <= pipeline_right_side and pipeline_bottom <= comp_y <= pipeline_top:
-                  pipeline["components"].append(component["name"])  # Add the component to the pipeline's list
+    # Once all components and pipelines are parsed, determine which components fall within each pipeline
+    for pipeline in pipelines:
+        pipeline_x = pipeline["x"]  # Left side of the bounding box
+        pipeline_right_side = pipeline["y"]  # Right side of the bounding box
+        
+        # Find the matching component to get the y position for the vertical position of the pipeline
+        matching_component = next((comp for comp in components if comp["name"] == pipeline["name"]), None)
+        if matching_component:
+            _, pipeline_bottom = json.loads(matching_component["pos"])  # This is the bottom side of the pipeline's bounding box
+            pipeline_top = pipeline_bottom + 10  # Assuming the bounding box is 10 units high
+    
+            # Check each component to see if it falls within the pipeline's bounding box
+            for component in components:
+                comp_pos_str = component.get("pos", "[0, 0]")
+                comp_x, comp_y = json.loads(comp_pos_str)  # Extract x, y position of the component
+                
+                # Check if the component's position falls within the pipeline's bounding box
+                if pipeline_x <= comp_x <= pipeline_right_side and pipeline_bottom <= comp_y <= pipeline_top:
+                    pipeline["components"].append(component["name"])  # Add the component to the pipeline's list
 
     return {
         "title" : title,
