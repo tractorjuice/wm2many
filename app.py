@@ -333,7 +333,12 @@ elif selected == "WM to GRAPH":
 
         # Add nodes with stage (evolution) and visibility
         for component in parsed_map["components"]:
-            G.add_node(component["name"], stage=component["evolution"], visibility=component["visibility"])
+            # Parse the 'pos' string to extract x and y positions
+            pos_str = component.get("pos", "[0, 0]")  # Default to "[0, 0]" if 'pos' is not available
+            x, y = json.loads(pos_str)  # Use json.loads to convert the string to a tuple of floats
+    
+            # Add node to the NetworkX graph with the extracted position and other attributes
+            G.add_node(component["name"], stage=component["evolution"], visibility=component["visibility"], pos=(x, y))
 
         # Add edges
         for link in parsed_map["links"]:
@@ -350,21 +355,12 @@ elif selected == "WM to GRAPH":
         net = Network(height="1200px", width="100%", bgcolor="#222222", font_color="white")
         net.toggle_physics(False)  # Disable physics to use static positions
 
-        # Add nodes with positions, stages (evolution), and visibility
+        # Add nodes with positions, stages (evolution), and visibility to the PyVis network
         for node, node_attrs in G.nodes(data=True):
-            pos_str = node_attrs.get('pos', '[]')  # Get the position string, default to '[]'
-            try:
-                # Try parsing the position string into a tuple of floats
-                x, y = json.loads(pos_str)
-            except (ValueError, TypeError):
-                # If parsing fails, default to (0, 0)
-                x, y = (0, 0)
- 
-            # Determine the color based on the evolution stage
+            pos = node_attrs.get('pos', (0, 0))  # Default to (0, 0) if 'pos' is not available
+            x, y = pos
             node_color = evolution_colors.get(node_attrs.get('stage', ''), "#f68b24")  # Default color if stage is not found
-    
-            # Add node to PyVis network with specified position and color
-            net.add_node(node, label=node, x=x*1000, y=-y*1000, color=node_color)  # Adjust scaling factors as needed
+            net.add_node(node, label=node, x=x*1000, y=-y*1000, color=node_color)
 
         for source, target in G.edges():
             net.add_edge(source, target)
