@@ -448,6 +448,14 @@ elif selected == "WM to GRAPH":
         # Convert the graph to a JSON format for download
         graph_json = json_graph.node_link_data(G)
         graph_json_str = json.dumps(graph_json, indent=2)
+        
+        # Add a download button for the JSON file
+        st.download_button(
+            label="Download Graph JSON",
+            data=graph_json_str,
+            file_name="graph.json",
+            mime="application/json"
+        )
 
 
 elif selected == "WM to CYPHER":
