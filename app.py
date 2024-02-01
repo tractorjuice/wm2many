@@ -165,12 +165,16 @@ def parse_wardley_map(map_text):
     
             # Check each component to see if it falls within the pipeline's bounding box
             for component in components:
+                if component["name"] == pipeline["name"]:
+                    continue  # Skip the pipeline itself
+                
                 comp_pos_str = component.get("pos", "[0, 0]")
                 comp_x, comp_y = json.loads(comp_pos_str)  # Extract x, y position of the component
                 
                 # Check if the component's position falls within the pipeline's bounding box
                 if pipeline_x <= comp_x <= pipeline_right_side and pipeline_bottom <= comp_y <= pipeline_top:
                     pipeline["components"].append(component["name"])  # Add the component to the pipeline's list
+
 
 
     return {
