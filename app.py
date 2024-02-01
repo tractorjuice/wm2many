@@ -84,15 +84,14 @@ def parse_wardley_map(map_text):
         elif line.startswith("pipeline"):
             pos_index = line.find("[")
             if pos_index != -1:
-                # Extract x and right side (named 'width' here) directly from the line
+                # Extract x and y directly from the line without swapping
                 line_content = line[pos_index:]
-                x, right_side = json.loads(line_content)  # Extract x and right side directly
-                actual_width = right_side - x  # Calculate the actual width of the pipeline
+                x, y = json.loads(line_content)  # Extract x and y directly
             else:
-                x, actual_width = 0, 0  # Default values if 'pos' is not available
+                x, y = 0, 0  # Default values if 'pos' is not available
         
             name = line[line.find(' ') + 1:line.find('[')].strip()
-            pipelines.append({"name": name, "desc": "", "x": x, "width": actual_width, "components": []})
+            pipelines.append({"name": name, "desc": "", "x": x, "y": y, "components": []})
 
         elif line.startswith("links"):
             links.append(line)
