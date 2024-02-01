@@ -1,10 +1,8 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
-import json
-import toml
+import requests, re, json, toml
 from ast import Index
-import re
-import requests
+import networkx as nx
 
 def swap_xy(xy):
   new_xy = re.findall("\[(.*?)\]", xy)
@@ -308,41 +306,38 @@ elif selected == "WM to GRAPH":
     st.title("WM to GRAPH Converter")
     st.write(
         """  
-            """
-    )
-    st.write(
-        """  
     Let's convert your Wardley Map in WM to GRAPH
             """
     )
     
-    st.write(
-        """  
-            """
-    )
-    
-    # Map ID from onlinewardleymapping
-    map_id=''
     map_id = st.text_input("Enter the ID of the Wardley Map: For example https://onlinewardleymaps.com/#clone:OXeRWhqHSLDXfOnrfI, enter: OXeRWhqHSLDXfOnrfI", value="OXeRWhqHSLDXfOnrfI")
     
     # Fetch map using onlinewardleymapping api
     url = f"https://api.onlinewardleymaps.com/v1/maps/fetch?id={map_id}"
     response = requests.get(url)
     
-    # Check if the map was found
     if response.status_code == 200:
         map_data = response.json()
         wardley_map_text = map_data['text']
-
-# Parse the Wardley map text
         parsed_map = parse_wardley_map(wardley_map_text)
-        wardley_map_toml = toml.dumps(parsed_map)
-        st.write("TOML FILE CONTENT")
-        st.code(wardley_map_toml, language="toml")  
-        
-        toml_file_name = map_id + '.toml'
-        st.download_button(
-            "DOWNLOAD TOML FILE",
-            data=wardley_map_toml,
-            file_name=toml_file_name
-        )  
+
+        # Initialize graph
+        G = nx.DiGraph()
+
+        # Add nodes
+        for component in parsed_map["components"]:
+            G.add_node(component["name"], **component)
+
+        # Add edges
+        for link in parsed_map["links"]:
+            G.add_edge(link["src"], link["tgt"])
+
+        # Visualization (this requires additional setup, e.g., using Matplotlib)
+        # nx.draw(G, with_labels=True)
+
+        # For Streamlit, you might need to save the figure and then display it
+        # plt.savefig("graph.png")
+        # st.image("graph.png")
+
+        st.write("Graph conversion is complete. Check the server for the visualization.")
+      
