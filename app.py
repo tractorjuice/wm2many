@@ -374,22 +374,22 @@ elif selected == "WM to GRAPH":
                 pipe_y <= json.loads(comp.get("pos", "[0, 0]"))[1] <= (pipe_y + 10)  # Assuming the height of the pipeline is 10 units
             ]
 
-    # Sort components by their x position
-    sorted_components = sorted(components_in_pipeline, key=lambda comp: json.loads(comp.get("pos", "[0, 0]"))[0])
-
-    # Link neighboring components within the pipeline
-    for i in range(len(sorted_components) - 1):
-        src = sorted_components[i]["name"]
-        tgt = sorted_components[i + 1]["name"]
-        G.add_edge(src, tgt)
-
-        # Define a color mapping for evolution stages
-        evolution_colors = {
-            "genesis": "#FF5733",
-            "custom": "#33FF57",
-            "product": "#3357FF",
-            "commodity": "#F333FF"
-        }
+            # Sort components by their x position
+            sorted_components = sorted(components_in_pipeline, key=lambda comp: json.loads(comp.get("pos", "[0, 0]"))[0])
+    
+            # Link neighboring components within the pipeline
+            for i in range(len(sorted_components) - 1):
+                src = sorted_components[i]["name"]
+                tgt = sorted_components[i + 1]["name"]
+                G.add_edge(src, tgt)
+        
+                # Define a color mapping for evolution stages
+                evolution_colors = {
+                    "genesis": "#FF5733",
+                    "custom": "#33FF57",
+                    "product": "#3357FF",
+                    "commodity": "#F333FF"
+                }
 
         net = Network(height="1200px", width="100%", bgcolor="#222222", font_color="white")
         net.toggle_physics(False)  # Disable physics to use static positions
