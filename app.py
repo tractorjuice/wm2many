@@ -350,6 +350,13 @@ elif selected == "WM to GRAPH":
             if src in G and tgt in G:  # Check if both nodes exist
                 G.add_edge(src, tgt)
 
+        # Add pipeline nodes
+        pipeline_color = "#FFD700"  # Gold color for pipelines, adjust as needed
+        for pipeline in parsed_map["pipelines"]:
+            pos_str = pipeline.get("pos", "[0, 0]")
+            x, y = json.loads(pos_str)  # Convert the position string to floats
+            G.add_node(pipeline["name"], type='pipeline', desc=pipeline["desc"], pos=(x, y))
+
         # Define a color mapping for evolution stages
         evolution_colors = {
             "genesis": "#FF5733",
