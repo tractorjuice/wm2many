@@ -334,7 +334,6 @@ elif selected == "WM to GRAPH":
         # Add nodes with stage (evolution) and visibility
         for component in parsed_map["components"]:
             G.add_node(component["name"], stage=component["evolution"], visibility=component["visibility"])
-            print (G)
 
         # Add edges
         for link in parsed_map["links"]:
@@ -342,10 +341,10 @@ elif selected == "WM to GRAPH":
 
         # Define a color mapping for evolution stages
         evolution_colors = {
-            "Genesis": "#FF5733",
-            "Custom Built": "#33FF57",
-            "Product": "#3357FF",
-            "Commodity": "#F333FF"
+            "genesis": "#FF5733",
+            "custom": "#33FF57",
+            "product": "#3357FF",
+            "commodity": "#F333FF"
         }
 
         net = Network(height="1200px", width="100%", bgcolor="#222222", font_color="white")
