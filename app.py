@@ -345,11 +345,15 @@ elif selected == "WM to GRAPH":
         for source, target in G.edges():
             net.add_edge(source, target)
 
-        # Generate the network in HTML and display
-        net.show("graph.html")
-        HtmlFile = open("graph.html", 'r', encoding='utf-8')
-        source_code = HtmlFile.read() 
-        components.html(source_code, height=800)
+        output_path = "graph.html"
+        net.save_graph(output_path)
+        
+        # Read the content of the saved HTML file
+        with open(output_path, "r", encoding="utf-8") as file:
+            html_content = file.read()
+        
+        # Display the HTML content in Streamlit
+        components.html(html_content, height=800)
 
         # Convert the graph to a JSON format for download
         graph_json = json_graph.node_link_data(G)  # Convert the graph to a JSON-compatible dict
