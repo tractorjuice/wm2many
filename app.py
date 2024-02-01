@@ -3,6 +3,7 @@ from streamlit_option_menu import option_menu
 import requests, re, json, toml
 from ast import Index
 import networkx as nx
+from networkx.readwrite import json_graph
 
 def swap_xy(xy):
   new_xy = re.findall("\[(.*?)\]", xy)
@@ -306,7 +307,7 @@ elif selected == "WM to GRAPH":
     st.title("WM to GRAPH Converter")
     st.write(
         """
-    Let's convert your Wardley Map in WM to GRAPH
+    Let's convert your Wardley Map in WM to GRAPH and then to JSON
             """
     )
 
@@ -326,34 +327,18 @@ elif selected == "WM to GRAPH":
         # Initialize the graph
         G = nx.DiGraph()
 
-        # Define unique evolution stages and visibility levels
-        evolution_stages = ['Genesis', 'Custom Built', 'Product', 'Commodity']
-        visibility_levels = ['Invisible', 'Visible', 'Very Visible']
-
-        # Add nodes for evolution stages and visibility levels
-        for stage in evolution_stages:
-            G.add_node(stage, type='evolution_stage')
-
-        for level in visibility_levels:
-            G.add_node(level, type='visibility_level')
-
-        # Add component nodes and connect them to their respective evolution and visibility nodes
+        # Add nodes with stage (evolution) and visibility
         for component in parsed_map["components"]:
-            G.add_node(component["name"], type='component', **component)
-            G.add_edge(component["name"], component["evolution"])
-            G.add_edge(component["name"], component["visibility"])
+            G.add_node(component["name"], stage=component["evolution"], visibility=component["visibility"])
 
-        # Assuming 'parsed_map["links"]' contains direct links between components
-        # Add direct edges between components if needed
+        # Add edges
         for link in parsed_map["links"]:
             G.add_edge(link["src"], link["tgt"])
 
-        # Print nodes with their types, stages, and visibility
-        st.write("Nodes in the Graph:")
-        for node, data in G.nodes(data=True):
-            st.write(f"{node}: {data}")
+        # Convert the graph to a JSON format
+        graph_json = json_graph.node_link_data(G)  # Convert the graph to a JSON-compatible dict
+        graph_json_str = json.dumps(graph_json, indent=2)  # Convert the dict to a pretty-printed JSON string
 
-        # Print edges
-        st.write("Edges in the Graph:")
-        for src, tgt in G.edges():
-            st.write(f"{src} -> {tgt}")
+        # Display the JSON string
+        st.write("Graph in JSON format:")
+        st.json(graph_json_str)  # Streamlit's st.json displays JSON strings nicely
