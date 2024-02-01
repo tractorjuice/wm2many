@@ -365,7 +365,7 @@ elif selected == "WM to GRAPH":
             pos = node_attrs.get('pos', (0, 0))  # Default to (0, 0) if 'pos' is not available
             x, y = pos
             node_color = evolution_colors.get(node_attrs.get('stage', ''), "#f68b24")  # Default color if stage is not found
-            net.add_node(node, label=node, x=x*1000, y=-y*1000, color=node_color, size=node_size)
+            net.add_node(node, label=node, x=x*1300, y=-y*1000, color=node_color, size=node_size)
 
         for source, target in G.edges():
             net.add_edge(source, target)
