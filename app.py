@@ -348,11 +348,19 @@ elif selected == "WM to GRAPH":
         }
 
         net = Network(height="1200px", width="100%", bgcolor="#222222", font_color="white")
+        net.toggle_physics(False)  # Disable physics to use static positions
+
+        # Add nodes with positions, stages (evolution), and visibility
         for node, node_attrs in G.nodes(data=True):
+            # Extract x and y positions. Adjust the parsing as needed based on how you've stored positions
+            x, y = node_attrs.get('pos', (0, 0))  # Default to (0, 0) if 'pos' is not available
+    
             # Determine the color based on the evolution stage
-            node_color = evolution_colors.get(node_attrs.get('stage', ''), "#f68b24")
-            st.sidebar.write(node_color)
-            net.add_node(node, label=node, title=str(node_attrs), color=node_color)
+            node_color = evolution_colors.get(node_attrs.get('stage', ''), "#f68b24")  # Default color if stage is not found
+    
+            # Add node to PyVis network with specified position and color
+            net.add_node(node, label=node, x=x*1000, y=-y*1000, color=node_color)  # Adjust scaling factors as needed
+
         for source, target in G.edges():
             net.add_edge(source, target)
 
