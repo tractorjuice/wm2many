@@ -334,6 +334,7 @@ elif selected == "WM to GRAPH":
         # Add nodes with stage (evolution) and visibility
         for component in parsed_map["components"]:
             G.add_node(component["name"], stage=component["evolution"], visibility=component["visibility"])
+            print (G)
 
         # Add edges
         for link in parsed_map["links"]:
