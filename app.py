@@ -341,88 +341,79 @@ elif selected == "WM to GRAPH":
     # Fetch map using onlinewardleymapping API
     url = f"https://api.onlinewardleymaps.com/v1/maps/fetch?id={map_id}"
     response = requests.get(url)
-
+    
     if response.status_code == 200:
         map_data = response.json()
         wardley_map_text = map_data['text']
-
-        # Convert the Wardley map text to JSON (using your existing conversion logic)
+    
+        # Convert the Wardley map text to JSON
         parsed_map = parse_wardley_map(wardley_map_text)
-
+    
         # Initialize the graph
         G = nx.DiGraph()
-
-        # Add nodes for components
+    
+        # Add nodes with stage (evolution) and visibility
         for component in parsed_map["components"]:
             pos_str = component.get("pos", "[0, 0]")
             x, y = json.loads(pos_str)
-            G.add_node(component["name"], pos=(x, y))
-        
+            G.add_node(component["name"], stage=component["evolution"], visibility=component["visibility"], pos=(x, y))
+    
+        # Add edges with a check for existence of nodes
+        for link in parsed_map["links"]:
+            src, tgt = link["src"], link["tgt"]
+            if src in G and tgt in G:
+                G.add_edge(src, tgt)
+    
         # Process pipelines and link nodes within each pipeline
         for pipeline in parsed_map["pipelines"]:
             pos_str = pipeline.get("pos", "[0, 0]")
             pipe_x, pipe_width = json.loads(pos_str)
-            
+    
             # Find the y position of the pipeline from a component with the same name
             pipeline_component = next((comp for comp in parsed_map["components"] if comp["name"] == pipeline["name"]), None)
             _, pipe_y = json.loads(pipeline_component.get("pos", "[0, 0]")) if pipeline_component else (0, 0)
-        
+    
             # Find components within this pipeline's bounding box
             components_in_pipeline = [
                 comp for comp in parsed_map["components"]
                 if pipe_x <= json.loads(comp.get("pos", "[0, 0]"))[0] <= (pipe_x + pipe_width) and
-                pipe_y <= json.loads(comp.get("pos", "[0, 0]"))[1] <= (pipe_y + 10)  # Assuming the height of the pipeline is 10 units
+                pipe_y <= json.loads(comp.get("pos", "[0, 0]"))[1] <= (pipe_y + 10)
             ]
-        
+    
             # Sort components by their x position
             sorted_components = sorted(components_in_pipeline, key=lambda comp: json.loads(comp.get("pos", "[0, 0]"))[0])
-        
+    
             # Link neighboring components within the pipeline
             for i in range(len(sorted_components) - 1):
                 src = sorted_components[i]["name"]
                 tgt = sorted_components[i + 1]["name"]
                 G.add_edge(src, tgt)
-
-        # Define a color mapping for evolution stages
-        evolution_colors = {
-            "genesis": "#FF5733",
-            "custom": "#33FF57",
-            "product": "#3357FF",
-            "commodity": "#F333FF"
-        }
-
+    
+        # Visualization with PyVis
         net = Network(height="1200px", width="100%", bgcolor="#222222", font_color="white")
-        net.toggle_physics(False)  # Disable physics to use static positions
-
-        # Add nodes with positions, stages (evolution), and visibility to the PyVis network
+        net.toggle_physics(False)
+    
+        # Add nodes to the PyVis network
         for node, node_attrs in G.nodes(data=True):
-            pos = node_attrs.get('pos', (0, 0))  # Default to (0, 0) if 'pos' is not available
+            pos = node_attrs.get('pos', (0, 0))
             x, y = pos
-            node_color = evolution_colors.get(node_attrs.get('stage', ''), "#f68b24")  # Default color if stage is not found
-            net.add_node(node, label=node, x=x*1500, y=-y*1000, color=node_color, size=node_size, font_size=font_size)
-
-        for source, target in G.edges():
-            net.add_edge(source, target)
-
+            node_color = "#f68b24"  # Default color, adjust as needed
+            net.add_node(node, label=node, x=x*1500, y=-y*1000, color=node_color, size=10)
+    
+        # Add edges to the PyVis network
+        for src, tgt in G.edges():
+            net.add_edge(src, tgt)
+    
+        # Save and display the network
         output_path = "graph.html"
         net.save_graph(output_path)
-        
-        # Read the content of the saved HTML file
         with open(output_path, "r", encoding="utf-8") as file:
             html_content = file.read()
-        
-        # Display the HTML content in Streamlit
         components.html(html_content, height=1200)
-
+    
         # Convert the graph to a JSON format for download
-        graph_json = json_graph.node_link_data(G)  # Convert the graph to a JSON-compatible dict
-        graph_json_str = json.dumps(graph_json, indent=2)  # Convert the dict to a pretty-printed JSON string
-
-        # Add a download button for the JSON file
-        st.download_button(label="Download Graph JSON",
-                           data=graph_json_str,
-                           file_name="graph.json",
-                           mime="application/json")
+        graph_json = json_graph.node_link_data(G)
+        graph_json_str = json.dumps(graph_json, indent=2)
 
 
 elif selected == "WM to CYPHER":
