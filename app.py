@@ -326,18 +326,32 @@ elif selected == "WM to GRAPH":
         # Initialize the graph
         G = nx.DiGraph()
 
-        # Add nodes with stage (evolution) and visibility
-        for component in parsed_map["components"]:
-            G.add_node(component["name"], stage=component["evolution"], visibility=component["visibility"])
+        # Define unique evolution stages and visibility levels
+        evolution_stages = ['Genesis', 'Custom Built', 'Product', 'Commodity']
+        visibility_levels = ['Invisible', 'Visible', 'Very Visible']
 
-        # Add edges
+        # Add nodes for evolution stages and visibility levels
+        for stage in evolution_stages:
+            G.add_node(stage, type='evolution_stage')
+
+        for level in visibility_levels:
+            G.add_node(level, type='visibility_level')
+
+        # Add component nodes and connect them to their respective evolution and visibility nodes
+        for component in parsed_map["components"]:
+            G.add_node(component["name"], type='component', **component)
+            G.add_edge(component["name"], component["evolution"])
+            G.add_edge(component["name"], component["visibility"])
+
+        # Assuming 'parsed_map["links"]' contains direct links between components
+        # Add direct edges between components if needed
         for link in parsed_map["links"]:
             G.add_edge(link["src"], link["tgt"])
 
-        # Print nodes with stage and visibility
+        # Print nodes with their types, stages, and visibility
         st.write("Nodes in the Graph:")
         for node, data in G.nodes(data=True):
-            st.write(f"{node} (Stage: {data.get('stage', 'N/A')}, Visibility: {data.get('visibility', 'N/A')})")
+            st.write(f"{node}: {data}")
 
         # Print edges
         st.write("Edges in the Graph:")
