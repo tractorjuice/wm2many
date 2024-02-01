@@ -350,7 +350,8 @@ elif selected == "WM to GRAPH":
         net = Network(height="1200px", width="100%", bgcolor="#222222", font_color="white")
         for node, node_attrs in G.nodes(data=True):
             # Determine the color based on the evolution stage
-            node_color = evolution_colors.get(node_attrs.get('evolution', ''), "#f68b24")
+            node_color = evolution_colors.get(node_attrs.get('stage', ''), "#f68b24")
+            st.sidebar.write(node_color)
             net.add_node(node, label=node, title=str(node_attrs), color=node_color)
         for source, target in G.edges():
             net.add_edge(source, target)
