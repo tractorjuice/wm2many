@@ -310,6 +310,7 @@ elif selected == "WM to JSON":
 elif selected == "WM to GRAPH":
 
     node_size = 10  # Adjust this value as needed to make the nodes smaller or larger
+    font_size = 10
   
     st.title("WM to GRAPH Converter")
     st.write(
@@ -365,7 +366,7 @@ elif selected == "WM to GRAPH":
             pos = node_attrs.get('pos', (0, 0))  # Default to (0, 0) if 'pos' is not available
             x, y = pos
             node_color = evolution_colors.get(node_attrs.get('stage', ''), "#f68b24")  # Default color if stage is not found
-            net.add_node(node, label=node, x=x*1500, y=-y*1000, color=node_color, size=node_size)
+            net.add_node(node, label=node, x=x*1500, y=-y*1000, color=node_color, size=node_size, font_size=font_size)
 
         for source, target in G.edges():
             net.add_edge(source, target)
