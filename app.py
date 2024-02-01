@@ -294,7 +294,7 @@ elif selected == "WM to JSON":
         # Convert the parsed map to JSON
         wardley_map_json = json.dumps(parsed_map, indent=2)
         st.write("JSON FILE CONTENT")
-        st.json(wardley_map_json, expanded=False)  
+        st.code(wardley_map_json, language="json")
         
         json_file_name = map_id + '.json'
         st.download_button(
