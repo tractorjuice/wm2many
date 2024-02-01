@@ -398,30 +398,30 @@ elif selected == "WM to GRAPH":
             pipeline_x = pipeline["x"]  # Left side of the bounding box
             pipeline_right_side = pipeline["y"]  # Right side of the bounding box
         
-            # Find the matching component to get the y position for the top of the pipeline
+            # Determine the pipeline's vertical position and height
             matching_component = next((comp for comp in parsed_map["components"] if comp["name"] == pipeline["name"]), None)
             if matching_component:
-                _, pipeline_top = json.loads(matching_component["pos"])  # Top of the bounding box
-                pipeline_bottom = pipeline_top - 0.01  # Assuming the bounding box is 10 units high
+                _, pipeline_y = json.loads(matching_component["pos"])  # Use the y position of the matching component for the pipeline
+                pipeline_bottom = pipeline_y - 0.01  # Assuming the bounding box is 10 units high
         
-            # Collect components within the pipeline with their x positions
-            components_in_pipeline = []
+            # Ensure the pipeline node exists in the graph
+            if pipeline_name not in G.nodes:
+                G.add_node(pipeline_name, type='pipeline', pos=(pipeline_x, pipeline_y))
+        
+            # Iterate over components in the pipeline and link them to the pipeline
             for component_name in pipeline["components"]:
+                # Skip adding an edge to itself if the pipeline is named after a component
+                if component_name == pipeline_name:
+                    continue
+        
                 if component_name in G.nodes:  # Check if the component node exists
                     component_pos = G.nodes[component_name]['pos']
                     component_x, component_y = component_pos
+        
                     # Check if the component is within the pipeline's bounding box
-                    if pipeline_x <= component_x <= pipeline_right_side and pipeline_bottom <= component_y <= pipeline_top:
-                        components_in_pipeline.append((component_name, component_x))
-        
-            # Sort components by their x positions
-            sorted_components = sorted(components_in_pipeline, key=lambda comp: comp[1])
-        
-            # Link each component to its immediate neighbor from left to right
-            for i in range(len(sorted_components) - 1):
-                src = sorted_components[i][0]  # Source component name
-                tgt = sorted_components[i + 1][0]  # Target component name
-                G.add_edge(src, tgt)
+                    if pipeline_x <= component_x <= pipeline_right_side and pipeline_bottom <= component_y <= pipeline_y:
+                        # Link the pipeline to the component
+                        G.add_edge(pipeline_name, component_name)
 
         # Visualization with PyVis
         net = Network(height="1200px", width="100%", bgcolor="#222222", font_color="white")
