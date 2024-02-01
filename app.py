@@ -384,10 +384,6 @@ elif selected == "WM to GRAPH":
             if src in G and tgt in G:
                 G.add_edge(src, tgt)
     
-        # Define a color and size for pipeline nodes
-        pipeline_color = "#FFD700"
-        pipeline_node_size = 15  # Adjust as needed
-
         # Process pipelines
         for pipeline in parsed_map["pipelines"]:
             # Extract pipeline details
@@ -424,7 +420,8 @@ elif selected == "WM to GRAPH":
         net = Network(height="1200px",
                       width="100%",
                       #bgcolor="#222222",
-                      font_color="white"
+                      #font_color="white",
+                      font_color="black",
                      )
         net.toggle_physics(False)
     
