@@ -166,7 +166,7 @@ st.set_page_config(
 with st.sidebar:
     selected = option_menu(
         "Choose conversion",
-        ["WM to JSON", "WM to TOML", "JSON to TOML", "WM to GRAPH"],
+        ["WM to JSON", "WM to TOML", "WM to GRAPH", "JSON to TOML"],
         icons=["gear"],
         menu_icon="robot",
         default_index=0,
