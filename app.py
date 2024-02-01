@@ -343,9 +343,11 @@ elif selected == "WM to GRAPH":
             # Add node to the NetworkX graph with the extracted position and other attributes
             G.add_node(component["name"], stage=component["evolution"], visibility=component["visibility"], pos=(x, y))
 
-        # Add edges
+        # Add edges with a check for existence of nodes
         for link in parsed_map["links"]:
-            G.add_edge(link["src"], link["tgt"])
+            src, tgt = link["src"], link["tgt"]
+            if src in G and tgt in G:  # Check if both nodes exist
+                G.add_edge(src, tgt)
 
         # Define a color mapping for evolution stages
         evolution_colors = {
