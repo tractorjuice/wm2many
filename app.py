@@ -421,7 +421,11 @@ elif selected == "WM to GRAPH":
                         G.add_edge(pipeline_name, component_name)
 
         # Visualization with PyVis
-        net = Network(height="1200px", width="100%", bgcolor="#222222", font_color="white")
+        net = Network(height="1200px",
+                      width="100%",
+                      #bgcolor="#222222",
+                      font_color="white"
+                     )
         net.toggle_physics(False)
     
         # Add nodes to the PyVis network with colors based on their stage
