@@ -339,10 +339,20 @@ elif selected == "WM to GRAPH":
         for link in parsed_map["links"]:
             G.add_edge(link["src"], link["tgt"])
 
-        # Initialize a PyVis network and add nodes and edges from the NetworkX graph
-        net = Network(height="950px", width="100%", bgcolor="#222222", font_color="white")
+        # Define a color mapping for evolution stages
+        evolution_colors = {
+            "Genesis": "#FF5733",  # Example color for Genesis stage
+            "Custom Built": "#33FF57",  # Example color for Custom Built stage
+            "Product": "#3357FF",  # Example color for Product stage
+            "Commodity": "#F333FF"  # Example color for Commodity stage
+            # Add more mappings as needed
+        }
+
+        net = Network(height="1200px", width="100%", bgcolor="#222222", font_color="white")
         for node, node_attrs in G.nodes(data=True):
-            net.add_node(node, label=node, title=str(node_attrs), color="#f68b24" if node_attrs.get('type', '') == 'component' else "#16a085")
+            # Determine the color based on the evolution stage
+            node_color = evolution_colors.get(node_attrs.get('stage', ''), "#f68b24")  # Default color if stage is not found
+            net.add_node(node, label=node, title=str(node_attrs), color=node_color)
         for source, target in G.edges():
             net.add_edge(source, target)
 
