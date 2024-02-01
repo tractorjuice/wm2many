@@ -354,7 +354,7 @@ elif selected == "WM to GRAPH":
             html_content = file.read()
         
         # Display the HTML content in Streamlit
-        components.html(html_content, height=800)
+        components.html(html_content, height=1200)
 
         # Convert the graph to a JSON format for download
         graph_json = json_graph.node_link_data(G)  # Convert the graph to a JSON-compatible dict
