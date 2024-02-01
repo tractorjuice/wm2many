@@ -352,9 +352,14 @@ elif selected == "WM to GRAPH":
 
         # Add nodes with positions, stages (evolution), and visibility
         for node, node_attrs in G.nodes(data=True):
-            # Extract x and y positions. Adjust the parsing as needed based on how you've stored positions
-            x, y = node_attrs.get('pos', (0, 0))  # Default to (0, 0) if 'pos' is not available
-    
+            pos_str = node_attrs.get('pos', '[]')  # Get the position string, default to '[]'
+            try:
+                # Try parsing the position string into a tuple of floats
+                x, y = json.loads(pos_str)
+            except (ValueError, TypeError):
+                # If parsing fails, default to (0, 0)
+                x, y = (0, 0)
+ 
             # Determine the color based on the evolution stage
             node_color = evolution_colors.get(node_attrs.get('stage', ''), "#f68b24")  # Default color if stage is not found
     
