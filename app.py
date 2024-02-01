@@ -403,13 +403,13 @@ elif selected == "WM to GRAPH":
         net = Network(height="1200px", width="100%", bgcolor="#222222", font_color="white")
         net.toggle_physics(False)
     
-        # Add nodes to the PyVis network
+        # Add nodes to the PyVis network with colors based on their stage
         for node, node_attrs in G.nodes(data=True):
             pos = node_attrs.get('pos', (0, 0))
             x, y = pos
-            node_color = "#f68b24"  # Default color, adjust as needed
+            node_color = node_attrs.get('color', "#f68b24")  # Use the color assigned based on the stage
             net.add_node(node, label=node, x=x*1500, y=-y*1000, color=node_color, size=10)
-    
+
         # Add edges to the PyVis network
         for src, tgt in G.edges():
             net.add_edge(src, tgt)
