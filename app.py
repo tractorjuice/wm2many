@@ -374,31 +374,29 @@ elif selected == "WM to GRAPH":
             if src in G and tgt in G:
                 G.add_edge(src, tgt)
     
-        # Process pipelines and link nodes within each pipeline
+        # Define a color and size for pipeline nodes
+        pipeline_color = "#FFD700"
+        pipeline_node_size = 15  # Adjust as needed
+        
+        # Process pipelines
         for pipeline in parsed_map["pipelines"]:
-            pos_str = pipeline.get("pos", "[0, 0]")
-            pipe_x, pipe_width = json.loads(pos_str)
-    
-            # Find the y position of the pipeline from a component with the same name
-            pipeline_component = next((comp for comp in parsed_map["components"] if comp["name"] == pipeline["name"]), None)
-            _, pipe_y = json.loads(pipeline_component.get("pos", "[0, 0]")) if pipeline_component else (0, 0)
-    
-            # Find components within this pipeline's bounding box
-            components_in_pipeline = [
-                comp for comp in parsed_map["components"]
-                if pipe_x <= json.loads(comp.get("pos", "[0, 0]"))[0] <= (pipe_x + pipe_width) and
-                pipe_y <= json.loads(comp.get("pos", "[0, 0]"))[1] <= (pipe_y + 10)
-            ]
-            st.sidebar.write(components_in_pipeline)
-    
-            # Sort components by their x position
-            sorted_components = sorted(components_in_pipeline, key=lambda comp: json.loads(comp.get("pos", "[0, 0]"))[0])
-    
-            # Link neighboring components within the pipeline
-            for i in range(len(sorted_components) - 1):
-                src = sorted_components[i]["name"]
-                tgt = sorted_components[i + 1]["name"]
-                G.add_edge(src, tgt)
+            # Add a special node for the pipeline itself, if desired
+            pipeline_name = pipeline["name"]
+            pipeline_x = pipeline["x"]
+            pipeline_width = pipeline["width"]
+            # You might use the middle point of the pipeline for its x position in the graph
+            G.add_node(pipeline_name, type='pipeline', x=pipeline_x + pipeline_width / 2, color=pipeline_color, size=pipeline_node_size)
+        
+            # Connect components within the pipeline
+            prev_component = None
+            for component_name in pipeline["components"]:
+                if component_name in G:  # Check if the component node exists
+                    # Update the component's x position if you want to position it within the pipeline span
+                    # This might involve calculating a new x position based on pipeline_x, pipeline_width, and the index of the component
+                    if prev_component:
+                        # Connect the current component to the previous one
+                        G.add_edge(prev_component, component_name)
+                    prev_component = component_name
     
         # Visualization with PyVis
         net = Network(height="1200px", width="100%", bgcolor="#222222", font_color="white")
