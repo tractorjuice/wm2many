@@ -332,12 +332,11 @@ elif selected == "WM to GRAPH":
         for link in parsed_map["links"]:
             G.add_edge(link["src"], link["tgt"])
 
-        # Visualization (this requires additional setup, e.g., using Matplotlib)
-        # nx.draw(G, with_labels=True)
+        # Print nodes and edges
+        st.write("Nodes in the Graph:")
+        for node, data in G.nodes(data=True):
+            st.write(f"{node}: {data}")
 
-        # For Streamlit, you might need to save the figure and then display it
-        # plt.savefig("graph.png")
-        # st.image("graph.png")
-
-        st.write("Graph conversion is complete. Check the server for the visualization.")
-      
+        st.write("Edges in the Graph:")
+        for src, tgt, data in G.edges(data=True):
+            st.write(f"{src} -> {tgt}: {data}")
