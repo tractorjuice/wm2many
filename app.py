@@ -305,38 +305,41 @@ elif selected == "WM to JSON":
 elif selected == "WM to GRAPH":
     st.title("WM to GRAPH Converter")
     st.write(
-        """  
+        """
     Let's convert your Wardley Map in WM to GRAPH
             """
     )
-    
+
     map_id = st.text_input("Enter the ID of the Wardley Map: For example https://onlinewardleymaps.com/#clone:OXeRWhqHSLDXfOnrfI, enter: OXeRWhqHSLDXfOnrfI", value="OXeRWhqHSLDXfOnrfI")
-    
-    # Fetch map using onlinewardleymapping api
+
+    # Fetch map using onlinewardleymapping API
     url = f"https://api.onlinewardleymaps.com/v1/maps/fetch?id={map_id}"
     response = requests.get(url)
-    
+
     if response.status_code == 200:
         map_data = response.json()
         wardley_map_text = map_data['text']
+
+        # Convert the Wardley map text to JSON (using your existing conversion logic)
         parsed_map = parse_wardley_map(wardley_map_text)
 
-        # Initialize graph
+        # Initialize the graph
         G = nx.DiGraph()
 
-        # Add nodes
+        # Add nodes with stage (evolution) and visibility
         for component in parsed_map["components"]:
-            G.add_node(component["name"], **component)
+            G.add_node(component["name"], stage=component["evolution"], visibility=component["visibility"])
 
         # Add edges
         for link in parsed_map["links"]:
             G.add_edge(link["src"], link["tgt"])
 
-        # Print nodes and edges
+        # Print nodes with stage and visibility
         st.write("Nodes in the Graph:")
         for node, data in G.nodes(data=True):
-            st.write(f"{node}: {data}")
+            st.write(f"{node} (Stage: {data.get('stage', 'N/A')}, Visibility: {data.get('visibility', 'N/A')})")
 
+        # Print edges
         st.write("Edges in the Graph:")
-        for src, tgt, data in G.edges(data=True):
-            st.write(f"{src} -> {tgt}: {data}")
+        for src, tgt in G.edges():
+            st.write(f"{src} -> {tgt}")
