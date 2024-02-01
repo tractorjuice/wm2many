@@ -351,13 +351,23 @@ elif selected == "WM to GRAPH":
     
         # Initialize the graph
         G = nx.DiGraph()
+
+        # Define a color mapping for evolution stages
+        evolution_colors = {
+            "genesis": "#FF5733",
+            "custom": "#33FF57",
+            "product": "#3357FF",
+            "commodity": "#F333FF"
+        }
     
         # Add nodes with stage (evolution) and visibility
         for component in parsed_map["components"]:
             pos_str = component.get("pos", "[0, 0]")
             x, y = json.loads(pos_str)
-            G.add_node(component["name"], stage=component["evolution"], visibility=component["visibility"], pos=(x, y))
-    
+            stage = component.get("evolution", "unknown")  # Default to 'unknown' if not specified
+            node_color = evolution_colors.get(stage, "#f68b24")  # Use a default color if the stage is not found
+            G.add_node(component["name"], stage=stage, visibility=component["visibility"], pos=(x, y), color=node_color)
+
         # Add edges with a check for existence of nodes
         for link in parsed_map["links"]:
             src, tgt = link["src"], link["tgt"]
