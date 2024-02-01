@@ -387,7 +387,7 @@ elif selected == "WM to CYPHER":
         cypher_script = "\n".join(cypher_queries)
 
         # Display Cypher script
-        st.text_area("Cypher Script", cypher_script, height=250)
+        st.code(cypher_script, language="cypher")
 
         # Add a download button for the Cypher script
         st.download_button(label="Download Cypher Script",
