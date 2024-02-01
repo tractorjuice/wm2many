@@ -19,6 +19,8 @@ Choose the desired conversion option from the sidebar:
 - JSON to TOML: Converts a JSON file to TOML format.
 - WM to TOML: Converts a Wardley Map in WM format to TOML.
 - WM to JSON: Converts a Wardley Map in WM format to JSON.
+- WM to GRAPH: Converts a Wardley Mapin WM format to JSON GRAPH.
+- WM to CYPHER: Converts a Wardley Map in WM format to CYPHER.
 - Follow the instructions and upload the required files or enter the necessary information to perform the conversion.
 
 Once the conversion is complete, you can view the converted content and download the resulting file in the specified format.
