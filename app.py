@@ -422,8 +422,6 @@ elif selected == "WM to GRAPH":
                 src = sorted_components[i][0]  # Source component name
                 tgt = sorted_components[i + 1][0]  # Target component name
                 G.add_edge(src, tgt)
-                # Optional: print the linked components to the sidebar for debugging
-                st.sidebar.write(src, " -> ", tgt)
 
         # Visualization with PyVis
         net = Network(height="1200px", width="100%", bgcolor="#222222", font_color="white")
