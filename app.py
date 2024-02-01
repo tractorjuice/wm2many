@@ -395,34 +395,39 @@ elif selected == "WM to GRAPH":
         for pipeline in parsed_map["pipelines"]:
             # Extract pipeline details
             pipeline_name = pipeline["name"]
-            pipeline_x = pipeline["x"]
-            pipeline_width = pipeline["width"]
+            pipeline_x = pipeline["x"]  # Left side of the bounding box
+            pipeline_right_side = pipeline["y"]  # Right side of the bounding box
         
-            # Determine the pipeline's bounding box
-            pipeline_start = pipeline_x
-            pipeline_end = pipeline_x + pipeline_width
-            # Assuming the bottom of the pipeline is at y=0 and the height is 10 units
-            pipeline_bottom = 0
-            pipeline_top = 10
+            # Find the matching component to get the y position for the top of the pipeline
+            matching_component = next((comp for comp in parsed_map["components"] if comp["name"] == pipeline["name"]), None)
+            if matching_component:
+                _, pipeline_top = json.loads(matching_component["pos"])  # Top of the bounding box
+                pipeline_bottom = pipeline_top - 0.01  # Assuming the bounding box is 10 units high
         
             # Previous component name for linking
             prev_component_name = None
         
-            # Iterate over components in the pipeline
+            # Iterate over components in the pipeline and link them
             for component_name in pipeline["components"]:
+                # Skip linking the pipeline name itself as a component within the pipeline
+                if component_name == pipeline_name:
+                    continue
+        
                 if component_name in G.nodes:  # Check if the component node exists
                     component_pos = G.nodes[component_name]['pos']
                     component_x, component_y = component_pos
         
                     # Check if the component is within the pipeline's bounding box
-                    if pipeline_start <= component_x <= pipeline_end and pipeline_bottom <= component_y <= pipeline_top:
+                    if pipeline_x <= component_x <= pipeline_right_side and pipeline_bottom <= component_y <= pipeline_top:
                         # If there's a previous component in the pipeline, link it to the current component
                         if prev_component_name:
                             G.add_edge(prev_component_name, component_name)
+                            # Optional: print the linked components to the sidebar for debugging
                             st.sidebar.write(prev_component_name, component_name)
         
                         # Update the previous component name
                         prev_component_name = component_name
+
 
         # Visualization with PyVis
         net = Network(height="1200px", width="100%", bgcolor="#222222", font_color="white")
