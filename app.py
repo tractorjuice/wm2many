@@ -161,7 +161,7 @@ def parse_wardley_map(map_text):
         matching_component = next((comp for comp in components if comp["name"] == pipeline["name"]), None)
         if matching_component:
             _, pipeline_top = json.loads(matching_component["pos"])  # This is the top side of the pipeline's bounding box
-            pipeline_bottom = pipeline_top - 0.1  # Assuming the bounding box is 10 units high
+            pipeline_bottom = pipeline_top - 0.01  # Assuming the bounding box is 10 units high
     
             # Check each component to see if it falls within the pipeline's bounding box
             for component in components:
