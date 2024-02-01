@@ -352,27 +352,36 @@ elif selected == "WM to GRAPH":
         # Initialize the graph
         G = nx.DiGraph()
 
-        # Add nodes with stage (evolution) and visibility
+        # Add nodes for components
         for component in parsed_map["components"]:
-            # Parse the 'pos' string to extract x and y positions
-            pos_str = component.get("pos", "[0, 0]")  # Default to "[0, 0]" if 'pos' is not available
-            x, y = json.loads(pos_str)  # Use json.loads to convert the string to a tuple of floats
-    
-            # Add node to the NetworkX graph with the extracted position and other attributes
-            G.add_node(component["name"], stage=component["evolution"], visibility=component["visibility"], pos=(x, y))
-
-        # Add edges with a check for existence of nodes
-        for link in parsed_map["links"]:
-            src, tgt = link["src"], link["tgt"]
-            if src in G and tgt in G:  # Check if both nodes exist
-                G.add_edge(src, tgt)
-
-        # Add pipeline nodes
-        pipeline_color = "#FFD700"  # Gold color for pipelines, adjust as needed
+            pos_str = component.get("pos", "[0, 0]")
+            x, y = json.loads(pos_str)
+            G.add_node(component["name"], pos=(x, y))
+        
+        # Process pipelines and link nodes within each pipeline
         for pipeline in parsed_map["pipelines"]:
             pos_str = pipeline.get("pos", "[0, 0]")
-            x, y = json.loads(pos_str)  # Convert the position string to floats
-            G.add_node(pipeline["name"], type='pipeline', desc=pipeline["desc"], pos=(x, y))
+            pipe_x, pipe_width = json.loads(pos_str)
+            
+            # Find the y position of the pipeline from a component with the same name
+            pipeline_component = next((comp for comp in parsed_map["components"] if comp["name"] == pipeline["name"]), None)
+            _, pipe_y = json.loads(pipeline_component.get("pos", "[0, 0]")) if pipeline_component else (0, 0)
+        
+            # Find components within this pipeline's bounding box
+            components_in_pipeline = [
+                comp for comp in parsed_map["components"]
+                if pipe_x <= json.loads(comp.get("pos", "[0, 0]"))[0] <= (pipe_x + pipe_width) and
+                pipe_y <= json.loads(comp.get("pos", "[0, 0]"))[1] <= (pipe_y + 10)  # Assuming the height of the pipeline is 10 units
+            ]
+        
+            # Sort components by their x position
+            sorted_components = sorted(components_in_pipeline, key=lambda comp: json.loads(comp.get("pos", "[0, 0]"))[0])
+        
+            # Link neighboring components within the pipeline
+            for i in range(len(sorted_components) - 1):
+                src = sorted_components[i]["name"]
+                tgt = sorted_components[i + 1]["name"]
+                G.add_edge(src, tgt)
 
         # Define a color mapping for evolution stages
         evolution_colors = {
