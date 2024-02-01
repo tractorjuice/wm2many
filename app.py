@@ -389,6 +389,7 @@ elif selected == "WM to GRAPH":
                 if pipe_x <= json.loads(comp.get("pos", "[0, 0]"))[0] <= (pipe_x + pipe_width) and
                 pipe_y <= json.loads(comp.get("pos", "[0, 0]"))[1] <= (pipe_y + 10)
             ]
+            st.sidebar.write(components_in_pipeline)
     
             # Sort components by their x position
             sorted_components = sorted(components_in_pipeline, key=lambda comp: json.loads(comp.get("pos", "[0, 0]"))[0])
@@ -408,7 +409,7 @@ elif selected == "WM to GRAPH":
             pos = node_attrs.get('pos', (0, 0))
             x, y = pos
             node_color = node_attrs.get('color', "#f68b24")  # Use the color assigned based on the stage
-            net.add_node(node, label=node, x=x*1500, y=-y*1000, color=node_color, size=10)
+            net.add_node(node, label=node, x=x*1500, y=-y*1000, color=node_color, size=node_size)
 
         # Add edges to the PyVis network
         for src, tgt in G.edges():
