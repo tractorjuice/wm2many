@@ -377,27 +377,32 @@ elif selected == "WM to GRAPH":
         # Define a color and size for pipeline nodes
         pipeline_color = "#FFD700"
         pipeline_node_size = 15  # Adjust as needed
-        
+
         # Process pipelines
         for pipeline in parsed_map["pipelines"]:
-            # Add a special node for the pipeline itself, if desired
-            pipeline_name = pipeline["name"]
+            # Extract pipeline details
             pipeline_x = pipeline["x"]
             pipeline_width = pipeline["width"]
-            # You might use the middle point of the pipeline for its x position in the graph
-            G.add_node(pipeline_name, type='pipeline', x=pipeline_x + pipeline_width / 2, color=pipeline_color, size=pipeline_node_size)
         
-            # Connect components within the pipeline
-            prev_component = None
+            # List to hold components within the pipeline with their x positions
+            components_with_positions = []
+        
+            # Iterate over components in the pipeline
             for component_name in pipeline["components"]:
                 if component_name in G:  # Check if the component node exists
-                    # Update the component's x position if you want to position it within the pipeline span
-                    # This might involve calculating a new x position based on pipeline_x, pipeline_width, and the index of the component
-                    if prev_component:
-                        # Connect the current component to the previous one
-                        G.add_edge(prev_component, component_name)
-                    prev_component = component_name
-    
+                    component_data = G.nodes[component_name]
+                    component_pos = component_data.get('pos', (0, 0))
+                    components_with_positions.append((component_name, component_pos[0]))
+        
+            # Sort components by their x positions
+            sorted_components = sorted(components_with_positions, key=lambda x: x[1])
+        
+            # Link components from left to right
+            for i in range(len(sorted_components) - 1):
+                src = sorted_components[i][0]  # Source component name
+                tgt = sorted_components[i + 1][0]  # Target component name
+                G.add_edge(src, tgt)  # Add edge between neighboring components
+
         # Visualization with PyVis
         net = Network(height="1200px", width="100%", bgcolor="#222222", font_color="white")
         net.toggle_physics(False)
