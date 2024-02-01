@@ -326,9 +326,6 @@ elif selected == "WM to JSON":
 
 elif selected == "WM to GRAPH":
 
-    node_size = 10  # Adjust this value as needed to make the nodes smaller or larger
-    font_size = 10
-  
     st.title("WM to GRAPH Converter")
     st.write(
         """
@@ -337,7 +334,9 @@ elif selected == "WM to GRAPH":
     )
 
     map_id = st.text_input("Enter the ID of the Wardley Map: For example https://onlinewardleymaps.com/#clone:OXeRWhqHSLDXfOnrfI, enter: OXeRWhqHSLDXfOnrfI", value="OXeRWhqHSLDXfOnrfI")
-
+    node_size = 10  # Adjust this value as needed to make the nodes smaller or larger
+    font_size = 10
+  
     # Fetch map using onlinewardleymapping API
     url = f"https://api.onlinewardleymaps.com/v1/maps/fetch?id={map_id}"
     response = requests.get(url)
@@ -406,6 +405,7 @@ elif selected == "WM to GRAPH":
                         # If there's a previous component in the pipeline, link it to the current component
                         if prev_component_name:
                             G.add_edge(prev_component_name, component_name)
+                            st.sidebar.write(prev_component_name, component_name)
         
                         # Update the previous component name
                         prev_component_name = component_name
