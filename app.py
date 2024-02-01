@@ -167,9 +167,8 @@ st.set_page_config(
 with st.sidebar:
     selected = option_menu(
         "Choose conversion",
-        ["WM to JSON", "WM to TOML", "JSON to TOML"],
+        ["WM to JSON", "WM to TOML", "JSON to TOML", WM to GRAPH"],
         icons=["gear"],
-        # menu_icon="bookmark-fill",
         menu_icon="robot",
         default_index=0,
     )
@@ -303,4 +302,47 @@ elif selected == "WM to JSON":
             "DOWNLOAD JSON FILE",
             data=wardley_map_json,
             file_name=json_file_name
+        )
+
+if selected == "WM TO GRAPH":
+    st.title("WM to Graph file converter")
+    st.write(
+        """  
+
+            """
+    )
+
+    st.write(
+        """  
+    Let's convert your Wardley Map to GRAPH
+
+            """
+    )
+
+    st.write(
+        """  
+
+            """
+    )
+    json_file = st.file_uploader("UPLOAD JSON FILE")
+    st.info(
+        f"""
+                👆 Upload your json file.
+                
+                """
+    )
+
+
+    if json_file is not None:
+        json_text = json_file.read()
+
+        st.write("WM CONTENT")
+        st.code(json.loads(json_text))
+
+        toml_content = toml.dumps(json.loads(json_text))
+        st.write("TOML FILE CONTENT")
+        st.code(toml_content, language="toml")
+        toml_file_name = json_file.name.replace(".json", ".toml")
+        st.download_button(
+            "DOWNLOAD TOML FILE", data=toml_content, file_name=toml_file_name
         )
