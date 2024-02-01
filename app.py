@@ -167,7 +167,7 @@ st.set_page_config(
 with st.sidebar:
     selected = option_menu(
         "Choose conversion",
-        ["WM to JSON", "WM to TOML", "JSON to TOML", WM to GRAPH"],
+        ["WM to JSON", "WM to TOML", "JSON to TOML", "WM to GRAPH"],
         icons=["gear"],
         menu_icon="robot",
         default_index=0,
@@ -304,45 +304,45 @@ elif selected == "WM to JSON":
             file_name=json_file_name
         )
 
-if selected == "WM TO GRAPH":
-    st.title("WM to Graph file converter")
+elif selected == "WM to GRAPH":
+    st.title("WM to GRAPH Converter")
     st.write(
         """  
-
             """
     )
-
     st.write(
         """  
-    Let's convert your Wardley Map to GRAPH
-
+    Let's convert your Wardley Map in WM to GRAPH
             """
     )
-
+    
     st.write(
         """  
-
             """
     )
-    json_file = st.file_uploader("UPLOAD JSON FILE")
-    st.info(
-        f"""
-                👆 Upload your json file.
-                
-                """
-    )
+    
+    # Map ID from onlinewardleymapping
+    map_id=''
+    map_id = st.text_input("Enter the ID of the Wardley Map: For example https://onlinewardleymaps.com/#clone:OXeRWhqHSLDXfOnrfI, enter: OXeRWhqHSLDXfOnrfI", value="OXeRWhqHSLDXfOnrfI")
+    
+    # Fetch map using onlinewardleymapping api
+    url = f"https://api.onlinewardleymaps.com/v1/maps/fetch?id={map_id}"
+    response = requests.get(url)
+    
+    # Check if the map was found
+    if response.status_code == 200:
+        map_data = response.json()
+        wardley_map_text = map_data['text']
 
-
-    if json_file is not None:
-        json_text = json_file.read()
-
-        st.write("WM CONTENT")
-        st.code(json.loads(json_text))
-
-        toml_content = toml.dumps(json.loads(json_text))
+# Parse the Wardley map text
+        parsed_map = parse_wardley_map(wardley_map_text)
+        wardley_map_toml = toml.dumps(parsed_map)
         st.write("TOML FILE CONTENT")
-        st.code(toml_content, language="toml")
-        toml_file_name = json_file.name.replace(".json", ".toml")
+        st.code(wardley_map_toml, language="toml")  
+        
+        toml_file_name = map_id + '.toml'
         st.download_button(
-            "DOWNLOAD TOML FILE", data=toml_content, file_name=toml_file_name
-        )
+            "DOWNLOAD TOML FILE",
+            data=wardley_map_toml,
+            file_name=toml_file_name
+        )  
