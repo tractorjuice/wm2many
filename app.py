@@ -2,9 +2,9 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 import requests, re, json, toml
 from ast import Index
-import networkx as nx
 from networkx.readwrite import json_graph
 from pyvis.network import Network
+import networkx as nx
 import streamlit.components.v1 as components
 
 
@@ -339,7 +339,7 @@ elif selected == "WM to GRAPH":
             G.add_edge(link["src"], link["tgt"])
 
         # Initialize a PyVis network and add nodes and edges from the NetworkX graph
-        net = Network(height="750px", width="100%", bgcolor="#222222", font_color="white", Notebook=False)
+        net = Network(height="750px", width="100%", bgcolor="#222222", font_color="white")
         for node, node_attrs in G.nodes(data=True):
             net.add_node(node, label=node, title=str(node_attrs), color="#f68b24" if node_attrs.get('type', '') == 'component' else "#16a085")
         for source, target in G.edges():
