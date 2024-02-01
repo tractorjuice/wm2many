@@ -341,17 +341,16 @@ elif selected == "WM to GRAPH":
 
         # Define a color mapping for evolution stages
         evolution_colors = {
-            "Genesis": "#FF5733",  # Example color for Genesis stage
-            "Custom Built": "#33FF57",  # Example color for Custom Built stage
-            "Product": "#3357FF",  # Example color for Product stage
-            "Commodity": "#F333FF"  # Example color for Commodity stage
-            # Add more mappings as needed
+            "Genesis": "#FF5733",
+            "Custom Built": "#33FF57",
+            "Product": "#3357FF",
+            "Commodity": "#F333FF"
         }
 
         net = Network(height="1200px", width="100%", bgcolor="#222222", font_color="white")
         for node, node_attrs in G.nodes(data=True):
             # Determine the color based on the evolution stage
-            node_color = evolution_colors.get(node_attrs.get('stage', ''), "#f68b24")  # Default color if stage is not found
+            node_color = evolution_colors.get(node_attrs.get('evolution', ''), "#f68b24")
             net.add_node(node, label=node, title=str(node_attrs), color=node_color)
         for source, target in G.edges():
             net.add_edge(source, target)
