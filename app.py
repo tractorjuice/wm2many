@@ -7,7 +7,6 @@ from pyvis.network import Network
 import networkx as nx
 import streamlit.components.v1 as components
 
-
 def swap_xy(xy):
   new_xy = re.findall("\[(.*?)\]", xy)
   if new_xy:
@@ -175,8 +174,6 @@ def parse_wardley_map(map_text):
                 if pipeline_x <= comp_x <= pipeline_right_side and pipeline_bottom <= comp_y <= pipeline_top:
                     pipeline["components"].append(component["name"])  # Add the component to the pipeline's list
 
-
-
     return {
         "title" : title,
         "anchors" : anchors,
@@ -269,7 +266,7 @@ elif selected == "WM to TOML":
     
     # Map ID from onlinewardleymapping
     map_id=''
-    map_id = st.text_input("Enter the ID of the Wardley Map: For example https://onlinewardleymaps.com/#clone:OXeRWhqHSLDXfOnrfI, enter: OXeRWhqHSLDXfOnrfI", value="OXeRWhqHSLDXfOnrfI")
+    map_id = st.text_input("Enter the ID of the Wardley Map: For example https://onlinewardleymaps.com/#clone:2LcDlz3tAKVRYR4XoA, enter: 2LcDlz3tAKVRYR4XoA", value="OXeRWhqHSLDXfOnrfI")
     
     # Fetch map using onlinewardleymapping api
     url = f"https://api.onlinewardleymaps.com/v1/maps/fetch?id={map_id}"
@@ -312,7 +309,7 @@ elif selected == "WM to JSON":
     
     # Map ID from onlinewardleymapping
     map_id=''
-    map_id = st.text_input("Enter the ID of the Wardley Map: For example https://onlinewardleymaps.com/#clone:OXeRWhqHSLDXfOnrfI, enter: OXeRWhqHSLDXfOnrfI", value="OXeRWhqHSLDXfOnrfI")
+    map_id = st.text_input("Enter the ID of the Wardley Map: For example https://onlinewardleymaps.com/#clone:2LcDlz3tAKVRYR4XoA, enter: 2LcDlz3tAKVRYR4XoA", value="OXeRWhqHSLDXfOnrfI")
     
     # Fetch map using onlinewardleymapping api
     url = f"https://api.onlinewardleymaps.com/v1/maps/fetch?id={map_id}"
@@ -347,7 +344,7 @@ elif selected == "WM to GRAPH":
             """
     )
 
-    map_id = st.text_input("Enter the ID of the Wardley Map: For example https://onlinewardleymaps.com/#clone:OXeRWhqHSLDXfOnrfI, enter: OXeRWhqHSLDXfOnrfI", value="OXeRWhqHSLDXfOnrfI")
+    map_id = st.text_input("Enter the ID of the Wardley Map: For example https://onlinewardleymaps.com/#clone:2LcDlz3tAKVRYR4XoA, enter: 2LcDlz3tAKVRYR4XoA", value="OXeRWhqHSLDXfOnrfI")
     node_size = 10  # Adjust this value as needed to make the nodes smaller or larger
     font_size = 10
   
@@ -469,7 +466,7 @@ elif selected == "WM to CYPHER":
             """
     )
 
-    map_id = st.text_input("Enter the ID of the Wardley Map: For example https://onlinewardleymaps.com/#clone:OXeRWhqHSLDXfOnrfI, enter: OXeRWhqHSLDXfOnrfI", value="OXeRWhqHSLDXfOnrfI")
+    map_id = st.text_input("Enter the ID of the Wardley Map: For example https://onlinewardleymaps.com/#clone:2LcDlz3tAKVRYR4XoA, enter: 2LcDlz3tAKVRYR4XoA", value="OXeRWhqHSLDXfOnrfI")
 
     # Fetch map using onlinewardleymapping API
     url = f"https://api.onlinewardleymaps.com/v1/maps/fetch?id={map_id}"
