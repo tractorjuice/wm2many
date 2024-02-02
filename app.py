@@ -501,7 +501,7 @@ elif selected == "WM to GRAPH":
         )
 
 # Handle "WM to GML" option
-elif selected == "WM to GRAPH":
+elif selected == "WM to GML":
 
     st.title("WM to GML Converter")  # Update the title to reflect the new functionality
     st.write(
