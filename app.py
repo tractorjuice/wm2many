@@ -617,7 +617,7 @@ elif selected == "WM to GML":
     st.sidebar.write("GML FILE CONTENT")
 
     # Add a download button for the GML file
-    st.download_button(
+    st.sidebar.download_button(
         label="Download GML File",
         data=gml_data,
         file_name="graph.gml",
