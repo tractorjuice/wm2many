@@ -282,7 +282,7 @@ elif selected == "WM to TOML":
         st.code(wardley_map_toml, language="toml")  
         
         toml_file_name = map_id + '.toml'
-        st.download_button(
+        st.sidebar.download_button(
             "DOWNLOAD TOML FILE",
             data=wardley_map_toml,
             file_name=toml_file_name
@@ -327,7 +327,7 @@ elif selected == "WM to JSON":
         st.code(wardley_map_json, language="json")
         
         json_file_name = map_id + '.json'
-        st.download_button(
+        st.sidebar.download_button(
             "DOWNLOAD JSON FILE",
             data=wardley_map_json,
             file_name=json_file_name
@@ -375,7 +375,7 @@ elif selected == "WM to CYPHER":
         st.code(cypher_script, language="cypher")
 
         # Add a download button for the Cypher script
-        st.download_button(label="Download Cypher Script",
+        st.sidebar.download_button(label="Download Cypher Script",
                            data=cypher_script,
                            file_name="wardley_map_to_cypher.cql",
                            mime="text/plain")
@@ -488,15 +488,16 @@ elif selected == "WM to GRAPH":
         graph_json_str = json.dumps(graph_json, indent=2)
 
         st.write("JSON FILE CONTENT")
-        st.code(graph_json_str, language="json")
       
         # Add a download button for the JSON file
-        st.download_button(
+        st.sidebar.download_button(
             label="Download Graph JSON",
             data=graph_json_str,
             file_name="graph.json",
             mime="application/json"
         )
+      
+        st.sidebar.code(graph_json_str, language="json")
 
 # Handle "WM to GML" option
 elif selected == "WM to GML":
