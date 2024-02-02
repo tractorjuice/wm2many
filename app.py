@@ -487,7 +487,7 @@ elif selected == "WM to GRAPH":
         graph_json = json_graph.node_link_data(G)
         graph_json_str = json.dumps(graph_json, indent=2)
 
-        st.write("JSON FILE CONTENT")
+        st.sidebar.write("JSON FILE CONTENT")
       
         # Add a download button for the JSON file
         st.sidebar.download_button(
