@@ -597,6 +597,13 @@ elif selected == "WM to GML":
         # Add edges to the PyVis network
         for src, tgt in G.edges():
             net.add_edge(src, tgt)
+    
+        # Save and display the network
+        output_path = "graph.html"
+        net.save_graph(output_path)
+        with open(output_path, "r", encoding="utf-8") as file:
+            html_content = file.read()
+        components.html(html_content, height=1200)
 
     # Save the graph to a GML file
     gml_file_path = "graph.gml"
@@ -607,8 +614,7 @@ elif selected == "WM to GML":
         gml_data = gml_file.read()
 
     # Display GML file content (optional, for verification)
-    st.write("GML FILE CONTENT")
-    st.code(gml_data, language="gml")
+    st.sidebar.write("GML FILE CONTENT")
 
     # Add a download button for the GML file
     st.download_button(
@@ -617,3 +623,5 @@ elif selected == "WM to GML":
         file_name="graph.gml",
         mime="text/gml"
     )
+
+    st.sidebar.code(gml_data, language="gml")
