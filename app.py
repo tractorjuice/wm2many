@@ -235,17 +235,15 @@ if selected == "JSON to TOML":
 
     if json_file is not None:
         json_text = json_file.read()
-
-        st.write("JSON CONTENT")
-        st.code(json.loads(json_text))
-
+        st.sidebar.write("JSON CONTENT")
         toml_content = toml.dumps(json.loads(json_text))
         st.write("TOML FILE CONTENT")
         st.code(toml_content, language="toml")
         toml_file_name = json_file.name.replace(".json", ".toml")
-        st.download_button(
+        st.sidebar.download_button(
             "DOWNLOAD TOML FILE", data=toml_content, file_name=toml_file_name
         )
+        st.sidebar.code(json.loads(json_text))
         
 elif selected == "WM to TOML":
     st.title("WM to TOML Converter")
