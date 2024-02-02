@@ -199,8 +199,8 @@ st.set_page_config(
 with st.sidebar:
     selected = option_menu(
         "Choose conversion",
-        ["WM to JSON", "WM to TOML", "WM to GRAPH", "WM to CYPHER", "JSON to TOML"],
-        icons=["gear"],
+        ["WM to JSON", "WM to TOML", "WM to GRAPH", "WM to CYPHER",  "WM to GML", "JSON to TOML"],
+        icons=["gear"] * 6,
         menu_icon="robot",
         default_index=0,
     )
@@ -499,3 +499,44 @@ elif selected == "WM to GRAPH":
             file_name="graph.json",
             mime="application/json"
         )
+
+# Handle "WM to GML" option
+elif selected == "WM to GML":
+    st.title("WM to GML Converter")
+    st.write(
+        """
+        Let's convert your Wardley Map in WM to GML format.
+        """
+    )
+
+    map_id = st.text_input("Enter the ID of the Wardley Map:", value="")
+
+    if map_id:
+        # Fetch map using onlinewardleymaps API
+        url = f"https://api.onlinewardleymaps.com/v1/maps/fetch?id={map_id}"
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            map_data = response.json()
+            wardley_map_text = map_data['text']
+
+            # Convert the Wardley map text to a NetworkX graph
+            parsed_map = parse_wardley_map(wardley_map_text)
+            G = convert_parsed_map_to_graph(parsed_map)  # Assuming you have a function to convert the parsed map to a NetworkX graph
+
+            # Save the graph to GML format
+            gml_path = "/tmp/wardley_map.gml"  # Temporary path, adjust as needed
+            nx.write_gml(G, gml_path)
+
+            # Provide the GML file for download
+            with open(gml_path, "r") as file:
+                gml_content = file.read()
+
+            st.download_button(
+                label="Download GML File",
+                data=gml_content,
+                file_name="wardley_map.gml",
+                mime="text/plain"
+            )
+        else:
+            st.error("Failed to fetch the Wardley Map. Please check the map ID.")
