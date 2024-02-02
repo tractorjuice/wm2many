@@ -345,8 +345,8 @@ elif selected == "WM to GRAPH":
     )
 
     map_id = st.text_input("Enter the ID of the Wardley Map: For example https://onlinewardleymaps.com/#clone:2LcDlz3tAKVRYR4XoA, enter: 2LcDlz3tAKVRYR4XoA", value="2LcDlz3tAKVRYR4XoA")
-    node_size = 10  # Adjust this value as needed to make the nodes smaller or larger
-    font_size = 10
+    node_size = 5  # Adjust this value as needed to make the nodes smaller or larger
+    font_size = 6
   
     # Fetch map using onlinewardleymapping API
     url = f"https://api.onlinewardleymaps.com/v1/maps/fetch?id={map_id}"
@@ -457,7 +457,6 @@ elif selected == "WM to GRAPH":
             file_name="graph.json",
             mime="application/json"
         )
-
 
 elif selected == "WM to CYPHER":
     st.title("WM to CYPHER Converter")
