@@ -464,7 +464,7 @@ elif selected == "WM to GRAPH":
                         G.add_edge(pipeline_name, component_name)
 
         # Visualization with PyVis
-        net = Network(height="1200px", width="100%", font_color="black", select_menu=True)
+        net = Network(height="1200px", width="100%", font_color="black")
         net.show_buttons()
         net.toggle_physics(False)
     
