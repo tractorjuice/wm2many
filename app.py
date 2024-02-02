@@ -335,6 +335,53 @@ elif selected == "WM to JSON":
             file_name=json_file_name
         )
 
+elif selected == "WM to CYPHER":
+    st.title("WM to CYPHER Converter")
+    st.write(
+        """
+    Let's convert your Wardley Map in WM to Cypher queries for Neo4j
+            """
+    )
+
+    map_id = st.text_input("Enter the ID of the Wardley Map: For example https://onlinewardleymaps.com/#clone:2LcDlz3tAKVRYR4XoA, enter: 2LcDlz3tAKVRYR4XoA", value="2LcDlz3tAKVRYR4XoA")
+
+    # Fetch map using onlinewardleymapping API
+    url = f"https://api.onlinewardleymaps.com/v1/maps/fetch?id={map_id}"
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        map_data = response.json()
+        wardley_map_text = map_data['text']
+
+        # Convert the Wardley map text to JSON (using your existing conversion logic)
+        parsed_map = parse_wardley_map(wardley_map_text)
+
+        # Initialize Cypher query list
+        cypher_queries = []
+
+        # Generate Cypher queries for nodes
+        for component in parsed_map["components"]:
+            query = f"CREATE (:{component['name']} {{stage: '{component['evolution']}', visibility: '{component['visibility']}'}})"
+            cypher_queries.append(query)
+
+        # Generate Cypher queries for relationships
+        for link in parsed_map["links"]:
+            query = f"MATCH (a), (b) WHERE a.name = '{link['src']}' AND b.name = '{link['tgt']}' CREATE (a)-[:RELATES_TO]->(b)"
+            cypher_queries.append(query)
+
+        # Combine all queries into a single script
+        cypher_script = "\n".join(cypher_queries)
+
+        # Display Cypher script
+        st.write("CYPHER FILE CONTENT")
+        st.code(cypher_script, language="cypher")
+
+        # Add a download button for the Cypher script
+        st.download_button(label="Download Cypher Script",
+                           data=cypher_script,
+                           file_name="wardley_map_to_cypher.cql",
+                           mime="text/plain")
+
 elif selected == "WM to GRAPH":
 
     st.title("WM to GRAPH Converter")
@@ -421,7 +468,9 @@ elif selected == "WM to GRAPH":
                       width="100%",
                       font_color="black"
                      )
-        
+
+        net.show_buttons(filter_=['physics'])
+      
         net.toggle_physics(False)
     
         # Add nodes to the PyVis network with colors based on their stage
@@ -456,50 +505,3 @@ elif selected == "WM to GRAPH":
             file_name="graph.json",
             mime="application/json"
         )
-
-elif selected == "WM to CYPHER":
-    st.title("WM to CYPHER Converter")
-    st.write(
-        """
-    Let's convert your Wardley Map in WM to Cypher queries for Neo4j
-            """
-    )
-
-    map_id = st.text_input("Enter the ID of the Wardley Map: For example https://onlinewardleymaps.com/#clone:2LcDlz3tAKVRYR4XoA, enter: 2LcDlz3tAKVRYR4XoA", value="2LcDlz3tAKVRYR4XoA")
-
-    # Fetch map using onlinewardleymapping API
-    url = f"https://api.onlinewardleymaps.com/v1/maps/fetch?id={map_id}"
-    response = requests.get(url)
-
-    if response.status_code == 200:
-        map_data = response.json()
-        wardley_map_text = map_data['text']
-
-        # Convert the Wardley map text to JSON (using your existing conversion logic)
-        parsed_map = parse_wardley_map(wardley_map_text)
-
-        # Initialize Cypher query list
-        cypher_queries = []
-
-        # Generate Cypher queries for nodes
-        for component in parsed_map["components"]:
-            query = f"CREATE (:{component['name']} {{stage: '{component['evolution']}', visibility: '{component['visibility']}'}})"
-            cypher_queries.append(query)
-
-        # Generate Cypher queries for relationships
-        for link in parsed_map["links"]:
-            query = f"MATCH (a), (b) WHERE a.name = '{link['src']}' AND b.name = '{link['tgt']}' CREATE (a)-[:RELATES_TO]->(b)"
-            cypher_queries.append(query)
-
-        # Combine all queries into a single script
-        cypher_script = "\n".join(cypher_queries)
-
-        # Display Cypher script
-        st.write("CYPHER FILE CONTENT")
-        st.code(cypher_script, language="cypher")
-
-        # Add a download button for the Cypher script
-        st.download_button(label="Download Cypher Script",
-                           data=cypher_script,
-                           file_name="wardley_map_to_cypher.cql",
-                           mime="text/plain")
