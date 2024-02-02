@@ -501,42 +501,119 @@ elif selected == "WM to GRAPH":
         )
 
 # Handle "WM to GML" option
-elif selected == "WM to GML":
-    st.title("WM to GML Converter")
+elif selected == "WM to GRAPH":
+
+    st.title("WM to GML Converter")  # Update the title to reflect the new functionality
     st.write(
         """
-        Let's convert your Wardley Map in WM to GML format.
-        """
+    Let's convert your Wardley Map in WM to GML format and visualize it.
+            """
     )
 
-    map_id = st.text_input("Enter the ID of the Wardley Map:", value="")
+    map_id = st.text_input("Enter the ID of the Wardley Map: For example https://onlinewardleymaps.com/#clone:2LcDlz3tAKVRYR4XoA, enter: 2LcDlz3tAKVRYR4XoA", value="2LcDlz3tAKVRYR4XoA")
 
-    if map_id:
-        # Fetch map using onlinewardleymaps API
-        url = f"https://api.onlinewardleymaps.com/v1/maps/fetch?id={map_id}"
-        response = requests.get(url)
+    node_size = 5  # Adjust this value as needed to make the nodes smaller or larger
+    font_size = 6
+  
+    # Fetch map using onlinewardleymapping API
+    url = f"https://api.onlinewardleymaps.com/v1/maps/fetch?id={map_id}"
+    response = requests.get(url)
+    
+    if response.status_code == 200:
+        map_data = response.json()
+        wardley_map_text = map_data['text']
+    
+        # Convert the Wardley map text to JSON
+        parsed_map = parse_wardley_map(wardley_map_text)
+    
+        # Initialize the graph
+        G = nx.DiGraph()
 
-        if response.status_code == 200:
-            map_data = response.json()
-            wardley_map_text = map_data['text']
+        # Define a color mapping for evolution stages
+        evolution_colors = {
+            "genesis": "#FF5733",
+            "custom": "#33FF57",
+            "product": "#3357FF",
+            "commodity": "#F333FF"
+        }
+    
+        # Add nodes with stage (evolution) and visibility
+        for component in parsed_map["components"]:
+            pos_str = component.get("pos", "[0, 0]")
+            x, y = json.loads(pos_str)
+            stage = component.get("evolution", "unknown")  # Default to 'unknown' if not specified
+            node_color = evolution_colors.get(stage, "#f68b24")  # Use a default color if the stage is not found
+            G.add_node(component["name"], stage=stage, visibility=component["visibility"], pos=(x, y), color=node_color)
 
-            # Convert the Wardley map text to a NetworkX graph
-            parsed_map = parse_wardley_map(wardley_map_text)
-            G = convert_parsed_map_to_graph(parsed_map)  # Assuming you have a function to convert the parsed map to a NetworkX graph
+        # Add edges with a check for existence of nodes
+        for link in parsed_map["links"]:
+            src, tgt = link["src"], link["tgt"]
+            if src in G and tgt in G:
+                G.add_edge(src, tgt)
+    
+        # Process pipelines
+        for pipeline in parsed_map["pipelines"]:
+            # Extract pipeline details
+            pipeline_name = pipeline["name"]
+            pipeline_x = pipeline["x"]  # Left side of the bounding box
+            pipeline_right_side = pipeline["y"]  # Right side of the bounding box
+        
+            # Determine the pipeline's vertical position and height
+            matching_component = next((comp for comp in parsed_map["components"] if comp["name"] == pipeline["name"]), None)
+            if matching_component:
+                _, pipeline_y = json.loads(matching_component["pos"])  # Use the y position of the matching component for the pipeline
+                pipeline_bottom = pipeline_y - 0.01  # Assuming the bounding box is 10 units high
+        
+            # Ensure the pipeline node exists in the graph
+            if pipeline_name not in G.nodes:
+                G.add_node(pipeline_name, type='pipeline', pos=(pipeline_x, pipeline_y))
+        
+            # Iterate over components in the pipeline and link them to the pipeline
+            for component_name in pipeline["components"]:
+                # Skip adding an edge to itself if the pipeline is named after a component
+                if component_name == pipeline_name:
+                    continue
+        
+                if component_name in G.nodes:  # Check if the component node exists
+                    component_pos = G.nodes[component_name]['pos']
+                    component_x, component_y = component_pos
+        
+                    # Check if the component is within the pipeline's bounding box
+                    if pipeline_x <= component_x <= pipeline_right_side and pipeline_bottom <= component_y <= pipeline_y:
+                        # Link the pipeline to the component
+                        G.add_edge(pipeline_name, component_name)
 
-            # Save the graph to GML format
-            gml_path = "/tmp/wardley_map.gml"  # Temporary path, adjust as needed
-            nx.write_gml(G, gml_path)
+        # Visualization with PyVis
+        net = Network(height="1200px", width="100%", font_color="black")
+        net.toggle_physics(False)
+    
+        # Add nodes to the PyVis network with colors based on their stage
+        for node, node_attrs in G.nodes(data=True):
+            pos = node_attrs.get('pos', (0, 0))
+            x, y = pos
+            node_color = node_attrs.get('color', "#f68b24")  # Use the color assigned based on the stage
+            net.add_node(node, label=node, x=x*1700, y=-y*1000, color=node_color, size=node_size)
 
-            # Provide the GML file for download
-            with open(gml_path, "r") as file:
-                gml_content = file.read()
+        # Add edges to the PyVis network
+        for src, tgt in G.edges():
+            net.add_edge(src, tgt)
 
-            st.download_button(
-                label="Download GML File",
-                data=gml_content,
-                file_name="wardley_map.gml",
-                mime="text/plain"
-            )
-        else:
-            st.error("Failed to fetch the Wardley Map. Please check the map ID.")
+    # Save the graph to a GML file
+    gml_file_path = "graph.gml"
+    nx.write_gml(G, gml_file_path)
+
+    # Read the GML file content
+    with open(gml_file_path, "r") as gml_file:
+        gml_data = gml_file.read()
+
+    # Display GML file content (optional, for verification)
+    st.write("GML FILE CONTENT")
+    st.code(gml_data, language="gml")
+
+    # Add a download button for the GML file
+    st.download_button(
+        label="Download GML File",
+        data=gml_data,
+        file_name="graph.gml",
+        mime="text/gml"
+    )
