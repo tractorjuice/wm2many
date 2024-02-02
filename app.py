@@ -464,9 +464,8 @@ elif selected == "WM to GRAPH":
                         G.add_edge(pipeline_name, component_name)
 
         # Visualization with PyVis
-        net = Network(height="1200px", width="100%", font_color="black")
+        net = Network(height="1500px", width="100%", font_color="black")
         net.toggle_physics(False)
-        net.show_buttons(filter_=['nodes'])
     
         # Add nodes to the PyVis network with colors based on their stage
         for node, node_attrs in G.nodes(data=True):
@@ -484,7 +483,7 @@ elif selected == "WM to GRAPH":
         net.save_graph(output_path)
         with open(output_path, "r", encoding="utf-8") as file:
             html_content = file.read()
-        components.html(html_content, height=1200)
+        components.html(html_content, height=1500)
     
         # Convert the graph to a JSON format for download
         graph_json = json_graph.node_link_data(G)
