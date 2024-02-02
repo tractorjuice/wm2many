@@ -419,8 +419,7 @@ elif selected == "WM to GRAPH":
         # Visualization with PyVis
         net = Network(height="1200px",
                       width="100%",
-                      font_color="black",
-                      font_size=font_size
+                      font_color="black"
                      )
         net.toggle_physics(False)
     
