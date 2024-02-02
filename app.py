@@ -421,7 +421,18 @@ elif selected == "WM to GRAPH":
                       width="100%",
                       font_color="black"
                      )
+        
         net.toggle_physics(False)
+        # Set default font size for all nodes
+        net.set_options("""
+        {
+          "nodes": {
+            "font": {
+              "size": 20
+            }
+          }
+        }
+        """)
     
         # Add nodes to the PyVis network with colors based on their stage
         for node, node_attrs in G.nodes(data=True):
