@@ -469,8 +469,7 @@ elif selected == "WM to GRAPH":
                       font_color="black"
                      )
 
-        net.show_buttons(filter_=['physics'])
-      
+        net.show_buttons()
         net.toggle_physics(False)
     
         # Add nodes to the PyVis network with colors based on their stage
