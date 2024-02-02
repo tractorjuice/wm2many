@@ -466,6 +466,7 @@ elif selected == "WM to GRAPH":
         # Visualization with PyVis
         net = Network(height="1200px", width="100%", font_color="black")
         net.toggle_physics(False)
+        net.show_buttons(filter_=['nodes'])
     
         # Add nodes to the PyVis network with colors based on their stage
         for node, node_attrs in G.nodes(data=True):
