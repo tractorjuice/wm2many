@@ -423,6 +423,7 @@ elif selected == "WM to GRAPH":
                      )
         
         net.toggle_physics(False)
+      
         # Set default font size for all nodes
         net.set_options("""
         {
