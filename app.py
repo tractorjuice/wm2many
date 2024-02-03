@@ -452,14 +452,15 @@ elif selected == "WM to CYPHER":
         cypher_script = "\n".join(cypher_queries)
 
         # Display Cypher script
-        st.write("CYPHER FILE CONTENT")
-        st.code(cypher_script, language="cypher")
+        st.sidebar.write("CYPHER FILE CONTENT")
 
         # Add a download button for the Cypher script
         st.sidebar.download_button(label="Download Cypher Script",
                            data=cypher_script,
                            file_name="wardley_map_to_cypher.cql",
                            mime="text/plain")
+
+        st.sidebar.code(cypher_script, language="cypher")
 
 elif selected == "WM to GRAPH":
 
