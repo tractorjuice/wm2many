@@ -21,6 +21,7 @@ Choose the desired conversion option from the sidebar:
 - WM to JSON: Converts a Wardley Map in WM format to JSON.
 - WM to GRAPH: Converts a Wardley Mapin WM format to JSON GRAPH.
 - WM to CYPHER: Converts a Wardley Map in WM format to CYPHER.
+- WM to GML: Converts a Wardley Map in WM format to GML.
 - Follow the instructions and upload the required files or enter the necessary information to perform the conversion.
 
 Once the conversion is complete, you can view the converted content and download the resulting file in the specified format.
