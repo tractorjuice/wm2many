@@ -82,6 +82,14 @@ if map_selection == "Select from GitHub":
         st.session_state['current_map_id'] = map_id
         st.session_state['map_text'] = st.session_state['file_content']
 
+def reset_map():
+    st.session_state['messages'] = []
+    st.session_state['total_tokens_used'] = 0
+    st.session_state['tokens_used'] = 0
+    st.session_state['past'] = []
+    st.session_state['generated'] = []
+    st.session_state['disabled_buttons'] = []
+
 def swap_xy(xy):
   new_xy = re.findall("\[(.*?)\]", xy)
   if new_xy:
