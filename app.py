@@ -6,6 +6,81 @@ from networkx.readwrite import json_graph
 from pyvis.network import Network
 import networkx as nx
 import streamlit.components.v1 as components
+from github import Github
+import base64
+
+API_ENDPOINT = "https://api.onlinewardleymaps.com/v1/maps/fetch?id="
+GITHUB = st.secrets["GITHUB"]
+GITHUBREPO = "swardley/MAP-REPOSITORY"
+DEBUG = True # True to overwrite files that already exist
+map_id = None
+
+# Dictionary of map IDs with user-friendly names
+map_dict = {
+    "Tea Shop": "QRXryFJ8Q1NxhbHKQL",   
+    "Agriculture 2023 Research": "gQuu7Kby3yYveDngy2", 
+    "AI & Entertainment": "1LSW3jTlx4u16T06di", 
+    "Prompt Engineering": "mUJtoSmOfqlfXhNMJP",
+    "Microsoft Fabric": "K4DjW1RdsbUWV8JzoP",
+    "Fixed Penalty Notices": "gTTfD4r2mORudVFKge"
+}
+
+if 'map_text' not in st.session_state:
+    st.session_state['map_text'] = []
+    
+if 'current_map_id' not in st.session_state:
+    st.session_state['current_map_id'] = []
+
+try:
+    g = Github(GITHUB)
+    repo = g.get_repo(GITHUBREPO)
+except GithubException as e:
+    st.error(f"An error occurred contacting GitHub: {e}")
+    repo = None
+
+if 'file_list' not in st.session_state:
+    st.session_state.file_list = []
+    contents = repo.get_contents("")
+    while contents:
+        file_item = contents.pop(0)
+        if file_item.type == "dir":
+            contents.extend(repo.get_contents(file_item.path))
+        else:
+            file_name = file_item.name
+            # Check if the file name starts with a '.', has no extension, or is named 'LICENSE'
+            if (not file_name.startswith('.') and
+                os.path.splitext(file_name)[1] == '' and
+                file_name.lower() != 'license'):
+                st.session_state.file_list.append(file_item.path)
+
+map_selection = st.sidebar.radio("Map Selection", ("Select from GitHub", "Select from List", "Enter Map ID"), help="Select GitHub to get a list of Simon Wardley's latest research.\n\nSelect from list to get predefined maps.\n\nSelect Enter Map ID to provide your own Onlinewardleymaps id", key="map_selection")
+
+if map_selection == "Select from List":
+    selected_name = st.sidebar.selectbox("Select Map", list(map_dict.keys()))
+    map_id = map_dict[selected_name]
+elif map_selection == "Select from GitHub":
+    if 'file_list' in st.session_state:
+        selected_file = st.sidebar.selectbox("Select a Map", st.session_state.file_list)
+        file_item = repo.get_contents(selected_file)
+        file_content = base64.b64decode(file_item.content).decode('utf-8')
+        map_id = selected_file
+        st.session_state['file_content'] = file_content
+else:
+    map_id = st.sidebar.text_input("Enter Map ID:", key="map_id_input")
+    selected_name = map_id
+    
+if map_selection != "Select from GitHub":
+    if st.session_state.get('current_map_id') != map_id:
+        reset_map()
+        del st.session_state['messages']
+        st.session_state['current_map_id'] = map_id
+        st.session_state['map_text'] = get_owm_map(map_id)  
+
+if map_selection == "Select from GitHub":
+    if st.session_state.get('current_map_id') != map_id:
+        reset_map()
+        st.session_state['current_map_id'] = map_id
+        st.session_state['map_text'] = st.session_state['file_content']
 
 def swap_xy(xy):
   new_xy = re.findall("\[(.*?)\]", xy)
