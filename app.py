@@ -368,14 +368,15 @@ elif selected == "WM to TOML":
     parsed_map = parse_wardley_map(st.session_state.map_text)
     wardley_map_toml = toml.dumps(parsed_map)
     st.write("TOML FILE CONTENT")
-    st.code(wardley_map_toml, language="toml")  
     
     toml_file_name = map_id + '.toml'
     st.sidebar.download_button(
         "DOWNLOAD TOML FILE",
         data=wardley_map_toml,
         file_name=toml_file_name
-    )  
+    )
+    
+    st.code(wardley_map_toml, language="toml")  
 
 elif selected == "WM to JSON":
     st.title("WM to JSON File Converter")
@@ -393,23 +394,22 @@ elif selected == "WM to JSON":
         """  
             """
     )
-    
 
-        
     # Parse the Wardley map text
     parsed_map = parse_wardley_map(st.session_state.map_text)
     
     # Convert the parsed map to JSON
     wardley_map_json = json.dumps(parsed_map, indent=2)
     st.write("JSON FILE CONTENT")
-    st.code(wardley_map_json, language="json")
     
     json_file_name = map_id + '.json'
-    st.sidebar.download_button(
+    st.download_button(
         "DOWNLOAD JSON FILE",
         data=wardley_map_json,
         file_name=json_file_name
     )
+
+    st.code(wardley_map_json, language="json")
 
 elif selected == "WM to CYPHER":
     st.title("WM to CYPHER Converter")
@@ -521,15 +521,15 @@ elif selected == "WM to CYPHER":
     cypher_script = "\n".join(cypher_queries)
 
     # Display Cypher script
-    st.sidebar.write("CYPHER FILE CONTENT")
+    st.write("CYPHER FILE CONTENT")
 
     # Add a download button for the Cypher script
-    st.sidebar.download_button(label="Download Cypher Script",
+    st.download_button(label="Download Cypher Script",
                        data=cypher_script,
                        file_name="wardley_map_to_cypher.cql",
                        mime="text/plain")
 
-    st.sidebar.code(cypher_script, language="cypher")
+    st.code(cypher_script, language="cypher")
 
 elif selected == "WM to GRAPH":
 
@@ -629,17 +629,17 @@ elif selected == "WM to GRAPH":
     graph_json = json_graph.node_link_data(G)
     graph_json_str = json.dumps(graph_json, indent=2)
 
-    st.sidebar.write("JSON FILE CONTENT")
+    st.write("JSON FILE CONTENT")
   
     # Add a download button for the JSON file
-    st.sidebar.download_button(
+    st.download_button(
         label="Download Graph JSON",
         data=graph_json_str,
         file_name="graph.json",
         mime="application/json"
     )
   
-    st.sidebar.code(graph_json_str, language="json")
+    st.code(graph_json_str, language="json")
 
 # Handle "WM to GML" option
 elif selected == "WM to GML":
@@ -745,14 +745,14 @@ elif selected == "WM to GML":
         gml_data = gml_file.read()
     
     # Display GML file content (optional, for verification)
-    st.sidebar.write("GML FILE CONTENT")
+    st.write("GML FILE CONTENT")
     
     # Add a download button for the GML file
-    st.sidebar.download_button(
+    st.download_button(
         label="Download GML File",
         data=gml_data,
         file_name="graph.gml",
         mime="text/gml"
     )
     
-    st.sidebar.code(gml_data, language="gml")
+    st.code(gml_data, language="gml")
