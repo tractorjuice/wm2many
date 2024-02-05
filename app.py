@@ -467,8 +467,11 @@ elif selected == "WM to CYPHER":
             pipeline_bottom = pipeline_y - 0.01  # Assuming the bounding box is 10 units high
     
         # Ensure the pipeline node exists in the graph
-        if pipeline_name not in G.nodes:
-            G.add_node(pipeline_name, type='pipeline', pos=(pipeline_x, pipeline_y))
+        try:
+            if pipeline_name not in G.nodes:
+                G.add_node(pipeline_name, type='pipeline', pos=(pipeline_x, pipeline_y))
+        except:
+            st.write("Could not process pipeline")
     
         # Iterate over components in the pipeline and link them to the pipeline
         for component_name in pipeline["components"]:
@@ -585,8 +588,11 @@ elif selected == "WM to GRAPH":
             pipeline_bottom = pipeline_y - 0.01  # Assuming the bounding box is 10 units high
     
         # Ensure the pipeline node exists in the graph
-        if pipeline_name not in G.nodes:
-            G.add_node(pipeline_name, type='pipeline', pos=(pipeline_x, pipeline_y))
+        try:
+            if pipeline_name not in G.nodes:
+                G.add_node(pipeline_name, type='pipeline', pos=(pipeline_x, pipeline_y))
+        except:
+            st.write("Could not process pipeline")
     
         # Iterate over components in the pipeline and link them to the pipeline
         for component_name in pipeline["components"]:
