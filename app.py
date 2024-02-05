@@ -376,9 +376,8 @@ elif selected == "WM to TOML":
     )
     
     # Map ID from onlinewardleymapping
-    map_id=''
-    map_id = st.text_input("Enter the ID of the Wardley Map: For example https://onlinewardleymaps.com/#clone:2LcDlz3tAKVRYR4XoA, enter: 2LcDlz3tAKVRYR4XoA", value="2LcDlz3tAKVRYR4XoA")
-    
+    map_id=st.session_state.map_text
+   
     # Fetch map using onlinewardleymapping api
     url = f"https://api.onlinewardleymaps.com/v1/maps/fetch?id={map_id}"
     response = requests.get(url)
@@ -419,8 +418,8 @@ elif selected == "WM to JSON":
     )
     
     # Map ID from onlinewardleymapping
-    map_id=''
-    map_id = st.text_input("Enter the ID of the Wardley Map: For example https://onlinewardleymaps.com/#clone:2LcDlz3tAKVRYR4XoA, enter: 2LcDlz3tAKVRYR4XoA", value="2LcDlz3tAKVRYR4XoA")
+    # Map ID from onlinewardleymapping
+    map_id=st.session_state.map_text
     
     # Fetch map using onlinewardleymapping api
     url = f"https://api.onlinewardleymaps.com/v1/maps/fetch?id={map_id}"
@@ -454,7 +453,9 @@ elif selected == "WM to CYPHER":
             """
     )
 
-    map_id = st.text_input("Enter the ID of the Wardley Map: For example https://onlinewardleymaps.com/#clone:2LcDlz3tAKVRYR4XoA, enter: 2LcDlz3tAKVRYR4XoA", value="2LcDlz3tAKVRYR4XoA")
+    # Map ID from onlinewardleymapping
+    map_id=st.session_state.map_text
+    
     node_size = 5  # Adjust this value as needed to make the nodes smaller or larger
     font_size = 6
   
@@ -584,7 +585,9 @@ elif selected == "WM to GRAPH":
             """
     )
 
-    map_id = st.text_input("Enter the ID of the Wardley Map: For example https://onlinewardleymaps.com/#clone:2LcDlz3tAKVRYR4XoA, enter: 2LcDlz3tAKVRYR4XoA", value="2LcDlz3tAKVRYR4XoA")
+    # Map ID from onlinewardleymapping
+    map_id=st.session_state.map_text
+    
     node_size = 5  # Adjust this value as needed to make the nodes smaller or larger
     font_size = 6
   
@@ -704,7 +707,8 @@ elif selected == "WM to GML":
             """
     )
 
-    map_id = st.text_input("Enter the ID of the Wardley Map: For example https://onlinewardleymaps.com/#clone:2LcDlz3tAKVRYR4XoA, enter: 2LcDlz3tAKVRYR4XoA", value="2LcDlz3tAKVRYR4XoA")
+    # Map ID from onlinewardleymapping
+    map_id=st.session_state.map_text
 
     node_size = 5  # Adjust this value as needed to make the nodes smaller or larger
     font_size = 6
