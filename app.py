@@ -227,28 +227,27 @@ if 'map_text' not in st.session_state:
 if 'current_map_id' not in st.session_state:
     st.session_state['current_map_id'] = []
 
-with st.spinner("Loading GitHub Repo:"):
-    try:
-        g = Github(GITHUB)
-        repo = g.get_repo(GITHUBREPO)
-    except GithubException as e:
-        st.error(f"An error occurred contacting GitHub: {e}")
-        repo = None
-    
-    if 'file_list' not in st.session_state:
-        st.session_state.file_list = []
-        contents = repo.get_contents("")
-        while contents:
-            file_item = contents.pop(0)
-            if file_item.type == "dir":
-                contents.extend(repo.get_contents(file_item.path))
-            else:
-                file_name = file_item.name
-                # Check if the file name starts with a '.', has no extension, or is named 'LICENSE'
-                if (not file_name.startswith('.') and
-                    os.path.splitext(file_name)[1] == '' and
-                    file_name.lower() != 'license'):
-                    st.session_state.file_list.append(file_item.path)
+try:
+    g = Github(GITHUB)
+    repo = g.get_repo(GITHUBREPO)
+except GithubException as e:
+    st.error(f"An error occurred contacting GitHub: {e}")
+    repo = None
+
+if 'file_list' not in st.session_state:
+    st.session_state.file_list = []
+    contents = repo.get_contents("")
+    while contents:
+        file_item = contents.pop(0)
+        if file_item.type == "dir":
+            contents.extend(repo.get_contents(file_item.path))
+        else:
+            file_name = file_item.name
+            # Check if the file name starts with a '.', has no extension, or is named 'LICENSE'
+            if (not file_name.startswith('.') and
+                os.path.splitext(file_name)[1] == '' and
+                file_name.lower() != 'license'):
+                st.session_state.file_list.append(file_item.path)
 
 with st.sidebar:
     selected = option_menu(
