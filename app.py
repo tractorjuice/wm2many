@@ -246,11 +246,21 @@ if 'file_list' not in st.session_state:
                 file_name.lower() != 'license'):
                 st.session_state.file_list.append(file_item.path)
 
+with st.sidebar:
+    selected = option_menu(
+        "Choose conversion",
+        ["WM to JSON", "WM to TOML", "WM to GRAPH", "WM to CYPHER",  "WM to GML", "JSON to TOML"],
+        icons=["gear"] * 6,
+        menu_icon="robot",
+        default_index=0,
+    )
+    
 map_selection = st.sidebar.radio("Map Selection", ("Select from GitHub", "Select from List", "Enter Map ID"), help="Select GitHub to get a list of Simon Wardley's latest research.\n\nSelect from list to get predefined maps.\n\nSelect Enter Map ID to provide your own Onlinewardleymaps id", key="map_selection")
 
 if map_selection == "Select from List":
     selected_name = st.sidebar.selectbox("Select Map", list(map_dict.keys()))
     map_id = map_dict[selected_name]
+    
 elif map_selection == "Select from GitHub":
     if 'file_list' in st.session_state:
         selected_file = st.sidebar.selectbox("Select a Map", st.session_state.file_list)
@@ -294,15 +304,6 @@ if 'map_text' in st.session_state:
             st.write("Warnings parsing and the drawing map")
             for map_message in map.warnings:
                 st.warning(map_message)
-       
-with st.sidebar:
-    selected = option_menu(
-        "Choose conversion",
-        ["WM to JSON", "WM to TOML", "WM to GRAPH", "WM to CYPHER",  "WM to GML", "JSON to TOML"],
-        icons=["gear"] * 6,
-        menu_icon="robot",
-        default_index=0,
-    )
 
 if selected == "JSON to TOML":
     st.title("JSON to TOML file converter")
