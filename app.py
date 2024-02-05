@@ -8,6 +8,7 @@ import networkx as nx
 import streamlit.components.v1 as components
 from github import Github
 import base64
+from wardley_map import wardley
 
 API_ENDPOINT = "https://api.onlinewardleymaps.com/v1/maps/fetch?id="
 GITHUB = st.secrets["GITHUB"]
@@ -89,6 +90,40 @@ if map_selection == "Select from GitHub":
         reset_map()
         st.session_state['current_map_id'] = map_id
         st.session_state['map_text'] = st.session_state['file_content']
+
+# Display the map in the sidebar
+if 'map_text' in st.session_state:
+    with st.sidebar:
+        title = "No Title"
+        map_text = st.session_state['map_text']
+        for line in map_text.split("\n"):
+            if line.startswith("title"):
+                title = line.split("title ")[1]
+        if title:
+            st.markdown(f"### {title}")
+
+        # Get the Wardley Map
+        map, map_plot = wardley(map=map_text)
+        
+        # Plot the Wardley Map:
+        #map_placeholder = st.empty()
+        #map_placeholder.pyplot(map_plot)
+
+        # Display any warnings drawing the map
+        if map.warnings:
+            st.write("Warnings parsing and the drawing map")
+            for map_message in map.warnings:
+                st.warning(map_message)
+         
+        st.write("### Map Code")
+
+        # Display code with editor        
+        content = st_ace(value=st.session_state['map_text'], keybinding="vscode")
+        
+if not content == st.session_state['map_text']:
+    st.session_state['map_text'] = content
+    st.session_state['messages'] = get_messages(st.session_state['map_text'])
+    st.rerun()
 
 def swap_xy(xy):
   new_xy = re.findall("\[(.*?)\]", xy)
