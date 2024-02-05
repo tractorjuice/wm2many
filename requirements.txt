@@ -4,3 +4,7 @@ networkx
 pyvis
 pygithub
 matplotlib
+langchain-community
+langchain-core
+langchain-openai
+langchain
