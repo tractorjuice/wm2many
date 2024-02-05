@@ -343,7 +343,7 @@ if selected == "JSON to TOML":
         st.write("TOML FILE CONTENT")
         st.code(toml_content, language="toml")
         toml_file_name = json_file.name.replace(".json", ".toml")
-        st.sidebar.download_button(
+        st.download_button(
             "DOWNLOAD TOML FILE", data=toml_content, file_name=toml_file_name
         )
         st.sidebar.code(json.loads(json_text))
