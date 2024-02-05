@@ -120,11 +120,6 @@ if 'map_text' in st.session_state:
         # Display code with editor        
         #content = st_ace(value=st.session_state['map_text'], keybinding="vscode")
         
-if not content == st.session_state['map_text']:
-    st.session_state['map_text'] = content
-    st.session_state['messages'] = get_messages(st.session_state['map_text'])
-    st.rerun()
-
 def swap_xy(xy):
   new_xy = re.findall("\[(.*?)\]", xy)
   if new_xy:
