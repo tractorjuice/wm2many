@@ -274,11 +274,6 @@ def parse_wardley_map(map_text):
         "comments": comments,
     }
 
-st.set_page_config(
-    page_title="JSON to TOML file converter",
-    layout="wide"
-)
-
 with st.sidebar:
     selected = option_menu(
         "Choose conversion",
