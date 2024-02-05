@@ -404,32 +404,22 @@ elif selected == "WM to JSON":
             """
     )
     
-    # Map ID from onlinewardleymapping
-    map_id=st.session_state.current_map_id
+
+        
+    # Parse the Wardley map text
+    parsed_map = parse_wardley_map(st.session_state.map_text)
     
-    # Fetch map using onlinewardleymapping api
-    url = f"https://api.onlinewardleymaps.com/v1/maps/fetch?id={map_id}"
-    response = requests.get(url)
+    # Convert the parsed map to JSON
+    wardley_map_json = json.dumps(parsed_map, indent=2)
+    st.write("JSON FILE CONTENT")
+    st.code(wardley_map_json, language="json")
     
-    # Check if the map was found
-    if response.status_code == 200:
-        map_data = response.json()
-        wardley_map_text = map_data['text']
-        
-        # Parse the Wardley map text
-        parsed_map = parse_wardley_map(wardley_map_text)
-        
-        # Convert the parsed map to JSON
-        wardley_map_json = json.dumps(parsed_map, indent=2)
-        st.write("JSON FILE CONTENT")
-        st.code(wardley_map_json, language="json")
-        
-        json_file_name = map_id + '.json'
-        st.sidebar.download_button(
-            "DOWNLOAD JSON FILE",
-            data=wardley_map_json,
-            file_name=json_file_name
-        )
+    json_file_name = map_id + '.json'
+    st.sidebar.download_button(
+        "DOWNLOAD JSON FILE",
+        data=wardley_map_json,
+        file_name=json_file_name
+    )
 
 elif selected == "WM to CYPHER":
     st.title("WM to CYPHER Converter")
