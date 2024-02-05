@@ -33,93 +33,7 @@ def reset_map():
     st.session_state['past'] = []
     st.session_state['generated'] = []
     st.session_state['disabled_buttons'] = []
-
-if 'map_text' not in st.session_state:
-    st.session_state['map_text'] = []
     
-if 'current_map_id' not in st.session_state:
-    st.session_state['current_map_id'] = []
-
-try:
-    g = Github(GITHUB)
-    repo = g.get_repo(GITHUBREPO)
-except GithubException as e:
-    st.error(f"An error occurred contacting GitHub: {e}")
-    repo = None
-
-if 'file_list' not in st.session_state:
-    st.session_state.file_list = []
-    contents = repo.get_contents("")
-    while contents:
-        file_item = contents.pop(0)
-        if file_item.type == "dir":
-            contents.extend(repo.get_contents(file_item.path))
-        else:
-            file_name = file_item.name
-            # Check if the file name starts with a '.', has no extension, or is named 'LICENSE'
-            if (not file_name.startswith('.') and
-                os.path.splitext(file_name)[1] == '' and
-                file_name.lower() != 'license'):
-                st.session_state.file_list.append(file_item.path)
-
-map_selection = st.sidebar.radio("Map Selection", ("Select from GitHub", "Select from List", "Enter Map ID"), help="Select GitHub to get a list of Simon Wardley's latest research.\n\nSelect from list to get predefined maps.\n\nSelect Enter Map ID to provide your own Onlinewardleymaps id", key="map_selection")
-
-if map_selection == "Select from List":
-    selected_name = st.sidebar.selectbox("Select Map", list(map_dict.keys()))
-    map_id = map_dict[selected_name]
-elif map_selection == "Select from GitHub":
-    if 'file_list' in st.session_state:
-        selected_file = st.sidebar.selectbox("Select a Map", st.session_state.file_list)
-        file_item = repo.get_contents(selected_file)
-        file_content = base64.b64decode(file_item.content).decode('utf-8')
-        map_id = selected_file
-        st.session_state['file_content'] = file_content
-else:
-    map_id = st.sidebar.text_input("Enter Map ID:", key="map_id_input")
-    selected_name = map_id
-    
-if map_selection != "Select from GitHub":
-    if st.session_state.get('current_map_id') != map_id:
-        reset_map()
-        del st.session_state['messages']
-        st.session_state['current_map_id'] = map_id
-        st.session_state['map_text'] = get_owm_map(map_id)  
-
-if map_selection == "Select from GitHub":
-    if st.session_state.get('current_map_id') != map_id:
-        reset_map()
-        st.session_state['current_map_id'] = map_id
-        st.session_state['map_text'] = st.session_state['file_content']
-
-# Display the map in the sidebar
-if 'map_text' in st.session_state:
-    with st.sidebar:
-        title = "No Title"
-        map_text = st.session_state['map_text']
-        for line in map_text.split("\n"):
-            if line.startswith("title"):
-                title = line.split("title ")[1]
-        if title:
-            st.markdown(f"### {title}")
-
-        # Get the Wardley Map
-        map, map_plot = wardley(map=map_text)
-        
-        # Plot the Wardley Map:
-        #map_placeholder = st.empty()
-        #map_placeholder.pyplot(map_plot)
-
-        # Display any warnings drawing the map
-        if map.warnings:
-            st.write("Warnings parsing and the drawing map")
-            for map_message in map.warnings:
-                st.warning(map_message)
-         
-        st.write("### Map Code")
-
-        # Display code with editor        
-        #content = st_ace(value=st.session_state['map_text'], keybinding="vscode")
-        
 def swap_xy(xy):
   new_xy = re.findall("\[(.*?)\]", xy)
   if new_xy:
@@ -131,7 +45,7 @@ def swap_xy(xy):
   else:
     new_xy=""
     return (new_xy)
-
+      
 def parse_wardley_map(map_text):
     lines = map_text.strip().split("\n")
     title, evolution, anchors, components, nodes, links, evolve, pipelines, pioneers, market, blueline, notes, annotations, comments, style = [], [], [], [], [], [], [], [], [], [], [], [], [], [], []
@@ -304,6 +218,83 @@ def parse_wardley_map(map_text):
         "comments": comments,
     }
 
+if 'map_text' not in st.session_state:
+    st.session_state['map_text'] = []
+    
+if 'current_map_id' not in st.session_state:
+    st.session_state['current_map_id'] = []
+
+try:
+    g = Github(GITHUB)
+    repo = g.get_repo(GITHUBREPO)
+except GithubException as e:
+    st.error(f"An error occurred contacting GitHub: {e}")
+    repo = None
+
+if 'file_list' not in st.session_state:
+    st.session_state.file_list = []
+    contents = repo.get_contents("")
+    while contents:
+        file_item = contents.pop(0)
+        if file_item.type == "dir":
+            contents.extend(repo.get_contents(file_item.path))
+        else:
+            file_name = file_item.name
+            # Check if the file name starts with a '.', has no extension, or is named 'LICENSE'
+            if (not file_name.startswith('.') and
+                os.path.splitext(file_name)[1] == '' and
+                file_name.lower() != 'license'):
+                st.session_state.file_list.append(file_item.path)
+
+map_selection = st.sidebar.radio("Map Selection", ("Select from GitHub", "Select from List", "Enter Map ID"), help="Select GitHub to get a list of Simon Wardley's latest research.\n\nSelect from list to get predefined maps.\n\nSelect Enter Map ID to provide your own Onlinewardleymaps id", key="map_selection")
+
+if map_selection == "Select from List":
+    selected_name = st.sidebar.selectbox("Select Map", list(map_dict.keys()))
+    map_id = map_dict[selected_name]
+elif map_selection == "Select from GitHub":
+    if 'file_list' in st.session_state:
+        selected_file = st.sidebar.selectbox("Select a Map", st.session_state.file_list)
+        file_item = repo.get_contents(selected_file)
+        file_content = base64.b64decode(file_item.content).decode('utf-8')
+        map_id = selected_file
+        st.session_state['file_content'] = file_content
+else:
+    map_id = st.sidebar.text_input("Enter Map ID:", key="map_id_input")
+    selected_name = map_id
+    
+if map_selection != "Select from GitHub":
+    if st.session_state.get('current_map_id') != map_id:
+        reset_map()
+        del st.session_state['messages']
+        st.session_state['current_map_id'] = map_id
+        st.session_state['map_text'] = get_owm_map(map_id)  
+
+if map_selection == "Select from GitHub":
+    if st.session_state.get('current_map_id') != map_id:
+        reset_map()
+        st.session_state['current_map_id'] = map_id
+        st.session_state['map_text'] = st.session_state['file_content']
+
+# Display the map in the sidebar
+if 'map_text' in st.session_state:
+    with st.sidebar:
+        title = "No Title"
+        map_text = st.session_state['map_text']
+        for line in map_text.split("\n"):
+            if line.startswith("title"):
+                title = line.split("title ")[1]
+        if title:
+            st.markdown(f"### {title}")
+
+        # Get the Wardley Map
+        map, map_plot = wardley(map=map_text)
+        
+        # Display any warnings drawing the map
+        if map.warnings:
+            st.write("Warnings parsing and the drawing map")
+            for map_message in map.warnings:
+                st.warning(map_message)
+       
 with st.sidebar:
     selected = option_menu(
         "Choose conversion",
@@ -371,7 +362,7 @@ elif selected == "WM to TOML":
     )
     
     # Map ID from onlinewardleymapping
-    map_id=st.session_state.map_text
+    map_id=st.session_state.current_map_id
    
     # Fetch map using onlinewardleymapping api
     url = f"https://api.onlinewardleymaps.com/v1/maps/fetch?id={map_id}"
@@ -413,8 +404,7 @@ elif selected == "WM to JSON":
     )
     
     # Map ID from onlinewardleymapping
-    # Map ID from onlinewardleymapping
-    map_id=st.session_state.map_text
+    map_id=st.session_state.current_map_id
     
     # Fetch map using onlinewardleymapping api
     url = f"https://api.onlinewardleymaps.com/v1/maps/fetch?id={map_id}"
@@ -449,7 +439,7 @@ elif selected == "WM to CYPHER":
     )
 
     # Map ID from onlinewardleymapping
-    map_id=st.session_state.map_text
+    map_id=st.session_state.current_map_id
     
     node_size = 5  # Adjust this value as needed to make the nodes smaller or larger
     font_size = 6
@@ -581,7 +571,7 @@ elif selected == "WM to GRAPH":
     )
 
     # Map ID from onlinewardleymapping
-    map_id=st.session_state.map_text
+    map_id=st.session_state.current_map_id
     
     node_size = 5  # Adjust this value as needed to make the nodes smaller or larger
     font_size = 6
@@ -703,7 +693,7 @@ elif selected == "WM to GML":
     )
 
     # Map ID from onlinewardleymapping
-    map_id=st.session_state.map_text
+    map_id=st.session_state.current_map_id
 
     node_size = 5  # Adjust this value as needed to make the nodes smaller or larger
     font_size = 6
