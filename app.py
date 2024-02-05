@@ -471,7 +471,7 @@ elif selected == "WM to CYPHER":
             if pipeline_name not in G.nodes:
                 G.add_node(pipeline_name, type='pipeline', pos=(pipeline_x, pipeline_y))
         except:
-            st.write("Could not process pipeline")
+            st.sidebar.warning("Could not process pipeline")
     
         # Iterate over components in the pipeline and link them to the pipeline
         for component_name in pipeline["components"]:
@@ -592,7 +592,7 @@ elif selected == "WM to GRAPH":
             if pipeline_name not in G.nodes:
                 G.add_node(pipeline_name, type='pipeline', pos=(pipeline_x, pipeline_y))
         except:
-            st.write("Could not process pipeline")
+            st.sidebar.warning("Could not process pipeline")
     
         # Iterate over components in the pipeline and link them to the pipeline
         for component_name in pipeline["components"]:
@@ -706,7 +706,7 @@ elif selected == "WM to GML":
             if pipeline_name not in G.nodes:
                 G.add_node(pipeline_name, type='pipeline', pos=(pipeline_x, pipeline_y))
         except:
-            st.write("Could not process pipeline")
+            st.sidebar.warning("Could not process pipeline")
     
         # Iterate over components in the pipeline and link them to the pipeline
         for component_name in pipeline["components"]:
