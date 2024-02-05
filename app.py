@@ -346,7 +346,7 @@ if selected == "JSON to TOML":
         st.download_button(
             "DOWNLOAD TOML FILE", data=toml_content, file_name=toml_file_name
         )
-        st.sidebar.code(json.loads(json_text))
+        st.code(json.loads(json_text))
         
 elif selected == "WM to TOML":
     st.title("WM to TOML Converter")
@@ -370,7 +370,7 @@ elif selected == "WM to TOML":
     st.write("TOML FILE CONTENT")
     
     toml_file_name = map_id + '.toml'
-    st.sidebar.download_button(
+    st.download_button(
         "DOWNLOAD TOML FILE",
         data=wardley_map_toml,
         file_name=toml_file_name
