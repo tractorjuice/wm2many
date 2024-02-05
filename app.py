@@ -118,7 +118,7 @@ if 'map_text' in st.session_state:
         st.write("### Map Code")
 
         # Display code with editor        
-        content = st_ace(value=st.session_state['map_text'], keybinding="vscode")
+        #content = st_ace(value=st.session_state['map_text'], keybinding="vscode")
         
 if not content == st.session_state['map_text']:
     st.session_state['map_text'] = content
