@@ -219,6 +219,8 @@ def parse_wardley_map(map_text):
         "comments": comments,
     }
 
+st.set_page_config(page_title="Chat with your Wardley Map", layout="wide")    
+
 if 'map_text' not in st.session_state:
     st.session_state['map_text'] = []
     
