@@ -1,7 +1,3 @@
-from matplotlib.collections import LineCollection
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-import matplotlib
 import re
 import streamlit as st
 import base64
