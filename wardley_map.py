@@ -229,7 +229,7 @@ def wardley(map):
     wm.warnings = list(set(wm.warnings))
    
     #plt.tight_layout()
-    #svg_write(fig)   
+    svg_write(fig)   
     return wm, fig
                               
 # Actually plot:
