@@ -3,7 +3,6 @@ streamlit-option-menu
 networkx
 pyvis
 pygithub
-matplotlib
 langchain-community
 langchain-core
 langchain-openai
