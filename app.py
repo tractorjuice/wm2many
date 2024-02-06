@@ -242,23 +242,7 @@ try:
 except GithubException as e:
     st.error(f"An error occurred contacting GitHub: {e}")
     repo = None
-
-with st.spinner("Fetching latest maps from GitHub"):
-    if 'file_list' not in st.session_state:
-        st.session_state.file_list = []
-        contents = repo.get_contents("")
-        while contents:
-            file_item = contents.pop(0)
-            if file_item.type == "dir":
-                contents.extend(repo.get_contents(file_item.path))
-            else:
-                file_name = file_item.name
-                # Check if the file name starts with a '.', has no extension, or is named 'LICENSE'
-                if (not file_name.startswith('.') and
-                    os.path.splitext(file_name)[1] == '' and
-                    file_name.lower() != 'license'):
-                    st.session_state.file_list.append(file_item.path)
-                    
+            
 map_selection = st.sidebar.radio("Map Selection", ("Select from GitHub", "Select from List", "Enter Map ID"), help="Select GitHub to get a list of Simon Wardley's latest research.\n\nSelect from list to get predefined maps.\n\nSelect Enter Map ID to provide your own Onlinewardleymaps id", key="map_selection")
 
 if map_selection == "Select from List":
@@ -266,6 +250,22 @@ if map_selection == "Select from List":
     map_id = map_dict[selected_name]
     
 elif map_selection == "Select from GitHub":
+    with st.spinner("Fetching latest maps from GitHub"):
+        if 'file_list' not in st.session_state:
+            st.session_state.file_list = []
+            contents = repo.get_contents("")
+            while contents:
+                file_item = contents.pop(0)
+                if file_item.type == "dir":
+                    contents.extend(repo.get_contents(file_item.path))
+                else:
+                    file_name = file_item.name
+                    # Check if the file name starts with a '.', has no extension, or is named 'LICENSE'
+                    if (not file_name.startswith('.') and
+                        os.path.splitext(file_name)[1] == '' and
+                        file_name.lower() != 'license'):
+                        st.session_state.file_list.append(file_item.path)
+    
     if 'file_list' in st.session_state:
         selected_file = st.sidebar.selectbox("Select a Map", st.session_state.file_list)
         file_item = repo.get_contents(selected_file)
