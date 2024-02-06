@@ -227,6 +227,15 @@ if 'map_text' not in st.session_state:
 if 'current_map_id' not in st.session_state:
     st.session_state['current_map_id'] = []
 
+with st.sidebar:
+    selected = option_menu(
+        "Choose conversion",
+        ["WM to JSON", "WM to TOML", "WM to GRAPH", "WM to CYPHER",  "WM to GML", "JSON to TOML"],
+        icons=["gear"] * 6,
+        menu_icon="robot",
+        default_index=0,
+    )
+
 try:
     g = Github(GITHUB)
     repo = g.get_repo(GITHUBREPO)
@@ -248,16 +257,7 @@ if 'file_list' not in st.session_state:
                 os.path.splitext(file_name)[1] == '' and
                 file_name.lower() != 'license'):
                 st.session_state.file_list.append(file_item.path)
-
-with st.sidebar:
-    selected = option_menu(
-        "Choose conversion",
-        ["WM to JSON", "WM to TOML", "WM to GRAPH", "WM to CYPHER",  "WM to GML", "JSON to TOML"],
-        icons=["gear"] * 6,
-        menu_icon="robot",
-        default_index=0,
-    )
-    
+                    
 map_selection = st.sidebar.radio("Map Selection", ("Select from GitHub", "Select from List", "Enter Map ID"), help="Select GitHub to get a list of Simon Wardley's latest research.\n\nSelect from list to get predefined maps.\n\nSelect Enter Map ID to provide your own Onlinewardleymaps id", key="map_selection")
 
 if map_selection == "Select from List":
