@@ -123,3 +123,4 @@ def get_chatgpt_response(messages, model):
 def update_chat(messages, role, content):
 	messages.append({"role": role, "content": content})
 	return messages
+

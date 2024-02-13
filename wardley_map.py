@@ -189,3 +189,4 @@ def wardley(map):
 		wm.style = 'wardley'
 
 	return wm
+
