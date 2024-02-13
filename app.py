@@ -18,9 +18,9 @@ map_id = None
 
 # Dictionary of map IDs with user-friendly names
 map_dict = {
-    "Tea Shop": "QRXryFJ8Q1NxhbHKQL",   
-    "Agriculture 2023 Research": "gQuu7Kby3yYveDngy2", 
-    "AI & Entertainment": "1LSW3jTlx4u16T06di", 
+    "Tea Shop": "QRXryFJ8Q1NxhbHKQL",
+    "Agriculture 2023 Research": "gQuu7Kby3yYveDngy2",
+    "AI & Entertainment": "1LSW3jTlx4u16T06di",
     "Prompt Engineering": "mUJtoSmOfqlfXhNMJP",
     "Microsoft Fabric": "K4DjW1RdsbUWV8JzoP",
     "Fixed Penalty Notices": "gTTfD4r2mORudVFKge"
@@ -33,7 +33,8 @@ def reset_map():
     st.session_state['past'] = []
     st.session_state['generated'] = []
     st.session_state['disabled_buttons'] = []
-    
+
+
 def swap_xy(xy):
   new_xy = re.findall("\[(.*?)\]", xy)
   if new_xy:
@@ -45,7 +46,8 @@ def swap_xy(xy):
   else:
     new_xy=""
     return (new_xy)
-      
+
+
 def parse_wardley_map(map_text):
     lines = map_text.strip().split("\n")
     title, evolution, anchors, components, nodes, links, evolve, pipelines, pioneers, market, blueline, notes, annotations, comments, style = [], [], [], [], [], [], [], [], [], [], [], [], [], [], []
@@ -92,7 +94,7 @@ def parse_wardley_map(map_text):
                 elif 0.71 <= number[1] <= 1.0:
                     visibility = "high"
                 else:
-                    visibility = ""               
+                    visibility = ""
             else:
                 new_c_xy = ""
 
@@ -115,7 +117,7 @@ def parse_wardley_map(map_text):
                 x, y = json.loads(line_content)  # Extract x and y directly
             else:
                 x, y = 0, 0  # Default values if 'pos' is not available
-        
+
             name = line[line.find(' ') + 1:line.find('[')].strip()
             pipelines.append({"name": name, "desc": "", "x": x, "y": y, "components": []})
 
@@ -133,7 +135,7 @@ def parse_wardley_map(map_text):
             label = swap_xy(label)
             evolve.append({"name": name, "desc": "", "pos": new_c_xy, "labelpos": label})
 
-        elif line.startswith("pioneer"):          
+        elif line.startswith("pioneer"):
             pioneers.append(line)
 
         elif line.startswith("note"):
@@ -143,8 +145,8 @@ def parse_wardley_map(map_text):
                 new_c_xy = swap_xy(line)
             else:
                 new_c_xy = ""
-            notes.append({"name": name, "desc": "", "pos": new_c_xy, "labelpos": ""})   
-                  
+            notes.append({"name": name, "desc": "", "pos": new_c_xy, "labelpos": ""})
+
         elif line.startswith("annotations"):
             new_c_xy = swap_xy(line)
             annotations.append({"name": line, "desc": "", "pos": new_c_xy})
@@ -177,26 +179,26 @@ def parse_wardley_map(map_text):
             links.append({"src": source, "tgt": target})
         else:
             continue
-          
+
     # Once all components and pipelines are parsed, determine which components fall within each pipeline
     for pipeline in pipelines:
         pipeline_x = pipeline["x"]  # Left side of the bounding box
         pipeline_right_side = pipeline["y"]  # Right side of the bounding box
-        
+
         # Find the matching component to get the y position for the vertical position of the pipeline
         matching_component = next((comp for comp in components if comp["name"] == pipeline["name"]), None)
         if matching_component:
             _, pipeline_top = json.loads(matching_component["pos"])  # This is the top side of the pipeline's bounding box
             pipeline_bottom = pipeline_top - 0.01  # Assuming the bounding box is 10 units high
-    
+
             # Check each component to see if it falls within the pipeline's bounding box
             for component in components:
                 if component["name"] == pipeline["name"]:
                     continue  # Skip the pipeline itself
-                
+
                 comp_pos_str = component.get("pos", "[0, 0]")
                 comp_x, comp_y = json.loads(comp_pos_str)  # Extract x, y position of the component
-                
+
                 # Check if the component's position falls within the pipeline's bounding box
                 if pipeline_x <= comp_x <= pipeline_right_side and pipeline_bottom <= comp_y <= pipeline_top:
                     pipeline["components"].append(component["name"])  # Add the component to the pipeline's list
@@ -218,11 +220,11 @@ def parse_wardley_map(map_text):
         "comments": comments,
     }
 
-st.set_page_config(page_title="Chat with your Wardley Map", layout="wide")    
+st.set_page_config(page_title="Chat with your Wardley Map", layout="wide")
 
 if 'map_text' not in st.session_state:
     st.session_state['map_text'] = []
-    
+
 if 'current_map_id' not in st.session_state:
     st.session_state['current_map_id'] = []
 
@@ -241,13 +243,13 @@ try:
 except GithubException as e:
     st.error(f"An error occurred contacting GitHub: {e}")
     repo = None
-            
+
 map_selection = st.sidebar.radio("Map Selection", ("Select from GitHub", "Select from List", "Enter Map ID"), help="Select GitHub to get a list of Simon Wardley's latest research.\n\nSelect from list to get predefined maps.\n\nSelect Enter Map ID to provide your own Onlinewardleymaps id", key="map_selection")
 
 if map_selection == "Select from List":
     selected_name = st.sidebar.selectbox("Select Map", list(map_dict.keys()))
     map_id = map_dict[selected_name]
-    
+
 elif map_selection == "Select from GitHub":
     with st.spinner("Fetching latest maps from GitHub"):
         if 'file_list' not in st.session_state:
@@ -264,7 +266,7 @@ elif map_selection == "Select from GitHub":
                         os.path.splitext(file_name)[1] == '' and
                         file_name.lower() != 'license'):
                         st.session_state.file_list.append(file_item.path)
-    
+
     if 'file_list' in st.session_state:
         selected_file = st.sidebar.selectbox("Select a Map", st.session_state.file_list)
         file_item = repo.get_contents(selected_file)
@@ -274,13 +276,13 @@ elif map_selection == "Select from GitHub":
 else:
     map_id = st.sidebar.text_input("Enter Map ID:", key="map_id_input")
     selected_name = map_id
-    
+
 if map_selection != "Select from GitHub":
     if st.session_state.get('current_map_id') != map_id:
         reset_map()
         del st.session_state['messages']
         st.session_state['current_map_id'] = map_id
-        st.session_state['map_text'] = get_owm_map(map_id)  
+        st.session_state['map_text'] = get_owm_map(map_id)
 
 if map_selection == "Select from GitHub":
     if st.session_state.get('current_map_id') != map_id:
@@ -301,7 +303,7 @@ if 'map_text' in st.session_state:
 
         # Get the Wardley Map
         map = wardley(map=map_text)
-        
+
         # Display any warnings drawing the map
         if map.warnings:
             st.write("Warnings parsing and the drawing map")
@@ -311,20 +313,20 @@ if 'map_text' in st.session_state:
 if selected == "JSON to TOML":
     st.title("JSON to TOML file converter")
     st.write(
-        """  
+        """
 
             """
     )
 
     st.write(
-        """  
+        """
     Let's convert your Wardley Map in JSON to TOML
 
             """
     )
 
     st.write(
-        """  
+        """
 
             """
     )
@@ -332,7 +334,7 @@ if selected == "JSON to TOML":
     st.info(
         f"""
                 👆 Upload your json file.
-                
+
                 """
     )
 
@@ -347,61 +349,61 @@ if selected == "JSON to TOML":
             "DOWNLOAD TOML FILE", data=toml_content, file_name=toml_file_name
         )
         st.code(json.loads(json_text))
-        
+
 elif selected == "WM to TOML":
     st.title("WM to TOML Converter")
     st.write(
-        """  
+        """
             """
     )
     st.write(
-        """  
+        """
     Let's convert your Wardley Map in WM to TOML
             """
     )
-    
+
     st.write(
-        """  
+        """
             """
     )
-    
+
     parsed_map = parse_wardley_map(st.session_state.map_text)
     wardley_map_toml = toml.dumps(parsed_map)
     st.write("TOML FILE CONTENT")
-    
+
     toml_file_name = map_id + '.toml'
     st.download_button(
         "DOWNLOAD TOML FILE",
         data=wardley_map_toml,
         file_name=toml_file_name
     )
-    
-    st.code(wardley_map_toml, language="toml")  
+
+    st.code(wardley_map_toml, language="toml")
 
 elif selected == "WM to JSON":
     st.title("WM to JSON File Converter")
     st.write(
-        """  
+        """
             """
     )
     st.write(
-        """  
+        """
     Let's convert your Wardley Map in WM to JSON
             """
     )
-    
+
     st.write(
-        """  
+        """
             """
     )
 
     # Parse the Wardley map text
     parsed_map = parse_wardley_map(st.session_state.map_text)
-    
+
     # Convert the parsed map to JSON
     wardley_map_json = json.dumps(parsed_map, indent=2)
     st.write("JSON FILE CONTENT")
-    
+
     json_file_name = map_id + '.json'
     st.download_button(
         "DOWNLOAD JSON FILE",
@@ -418,10 +420,10 @@ elif selected == "WM to CYPHER":
     Let's convert your Wardley Map in WM to Cypher queries for Neo4j
             """
     )
-  
+
     node_size = 5  # Adjust this value as needed to make the nodes smaller or larger
     font_size = 6
-  
+
     # Convert the Wardley map text to JSON (using your existing conversion logic)
     parsed_map = parse_wardley_map(st.session_state.map_text)
 
@@ -438,7 +440,7 @@ elif selected == "WM to CYPHER":
         "product": "#3357FF",
         "commodity": "#F333FF"
     }
-    
+
     # Add nodes with stage (evolution) and visibility
     for component in parsed_map["components"]:
         pos_str = component.get("pos", "[0, 0]")
@@ -452,37 +454,37 @@ elif selected == "WM to CYPHER":
         src, tgt = link["src"], link["tgt"]
         if src in G and tgt in G:
             G.add_edge(src, tgt)
-    
+
     # Process pipelines
     for pipeline in parsed_map["pipelines"]:
         # Extract pipeline details
         pipeline_name = pipeline["name"]
         pipeline_x = pipeline["x"]  # Left side of the bounding box
         pipeline_right_side = pipeline["y"]  # Right side of the bounding box
-    
+
         # Determine the pipeline's vertical position and height
         matching_component = next((comp for comp in parsed_map["components"] if comp["name"] == pipeline["name"]), None)
         if matching_component:
             _, pipeline_y = json.loads(matching_component["pos"])  # Use the y position of the matching component for the pipeline
             pipeline_bottom = pipeline_y - 0.01  # Assuming the bounding box is 10 units high
-    
+
         # Ensure the pipeline node exists in the graph
         try:
             if pipeline_name not in G.nodes:
                 G.add_node(pipeline_name, type='pipeline', pos=(pipeline_x, pipeline_y))
         except:
             st.sidebar.warning("Could not process pipeline")
-    
+
         # Iterate over components in the pipeline and link them to the pipeline
         for component_name in pipeline["components"]:
             # Skip adding an edge to itself if the pipeline is named after a component
             if component_name == pipeline_name:
                 continue
-    
+
             if component_name in G.nodes:  # Check if the component node exists
                 component_pos = G.nodes[component_name]['pos']
                 component_x, component_y = component_pos
-    
+
                 # Check if the component is within the pipeline's bounding box
                 if pipeline_x <= component_x <= pipeline_right_side and pipeline_bottom <= component_y <= pipeline_y:
                     # Link the pipeline to the component
@@ -542,10 +544,10 @@ elif selected == "WM to GRAPH":
     Let's convert your Wardley Map in WM to GRAPH and visualize it.
             """
     )
-   
+
     node_size = 5  # Adjust this value as needed to make the nodes smaller or larger
     font_size = 6
-      
+
     # Convert the Wardley map text to JSON
     parsed_map = parse_wardley_map(st.session_state.map_text)
 
@@ -559,7 +561,7 @@ elif selected == "WM to GRAPH":
         "product": "#3357FF",
         "commodity": "#F333FF"
     }
-    
+
     # Add nodes with stage (evolution) and visibility
     for component in parsed_map["components"]:
         pos_str = component.get("pos", "[0, 0]")
@@ -580,30 +582,30 @@ elif selected == "WM to GRAPH":
         pipeline_name = pipeline["name"]
         pipeline_x = pipeline["x"]  # Left side of the bounding box
         pipeline_right_side = pipeline["y"]  # Right side of the bounding box
-    
+
         # Determine the pipeline's vertical position and height
         matching_component = next((comp for comp in parsed_map["components"] if comp["name"] == pipeline["name"]), None)
         if matching_component:
             _, pipeline_y = json.loads(matching_component["pos"])  # Use the y position of the matching component for the pipeline
             pipeline_bottom = pipeline_y - 0.01  # Assuming the bounding box is 10 units high
-    
+
         # Ensure the pipeline node exists in the graph
         try:
             if pipeline_name not in G.nodes:
                 G.add_node(pipeline_name, type='pipeline', pos=(pipeline_x, pipeline_y))
         except:
             st.sidebar.warning("Could not process pipeline")
-    
+
         # Iterate over components in the pipeline and link them to the pipeline
         for component_name in pipeline["components"]:
             # Skip adding an edge to itself if the pipeline is named after a component
             if component_name == pipeline_name:
                 continue
-    
+
             if component_name in G.nodes:  # Check if the component node exists
                 component_pos = G.nodes[component_name]['pos']
                 component_x, component_y = component_pos
-    
+
                 # Check if the component is within the pipeline's bounding box
                 if pipeline_x <= component_x <= pipeline_right_side and pipeline_bottom <= component_y <= pipeline_y:
                     # Link the pipeline to the component
@@ -636,7 +638,7 @@ elif selected == "WM to GRAPH":
     graph_json_str = json.dumps(graph_json, indent=2)
 
     st.write("JSON FILE CONTENT")
-  
+
     # Add a download button for the JSON file
     st.download_button(
         label="Download Graph JSON",
@@ -644,7 +646,7 @@ elif selected == "WM to GRAPH":
         file_name="graph.json",
         mime="application/json"
     )
-  
+
     st.code(graph_json_str, language="json")
 
 # Handle "WM to GML" option
@@ -659,7 +661,7 @@ elif selected == "WM to GML":
 
     node_size = 5  # Adjust this value as needed to make the nodes smaller or larger
     font_size = 6
-    
+
     # Convert the Wardley map text to JSON
     parsed_map = parse_wardley_map(st.session_state.map_text)
 
@@ -694,30 +696,30 @@ elif selected == "WM to GML":
         pipeline_name = pipeline["name"]
         pipeline_x = pipeline["x"]  # Left side of the bounding box
         pipeline_right_side = pipeline["y"]  # Right side of the bounding box
-    
+
         # Determine the pipeline's vertical position and height
         matching_component = next((comp for comp in parsed_map["components"] if comp["name"] == pipeline["name"]), None)
         if matching_component:
             _, pipeline_y = json.loads(matching_component["pos"])  # Use the y position of the matching component for the pipeline
             pipeline_bottom = pipeline_y - 0.01  # Assuming the bounding box is 10 units high
-    
+
         # Ensure the pipeline node exists in the graph
         try:
             if pipeline_name not in G.nodes:
                 G.add_node(pipeline_name, type='pipeline', pos=(pipeline_x, pipeline_y))
         except:
             st.sidebar.warning("Could not process pipeline")
-    
+
         # Iterate over components in the pipeline and link them to the pipeline
         for component_name in pipeline["components"]:
             # Skip adding an edge to itself if the pipeline is named after a component
             if component_name == pipeline_name:
                 continue
-    
+
             if component_name in G.nodes:  # Check if the component node exists
                 component_pos = G.nodes[component_name]['pos']
                 component_x, component_y = component_pos
-    
+
                 # Check if the component is within the pipeline's bounding box
                 if pipeline_x <= component_x <= pipeline_right_side and pipeline_bottom <= component_y <= pipeline_y:
                     # Link the pipeline to the component
@@ -748,14 +750,14 @@ elif selected == "WM to GML":
     # Save the graph to a GML file
     gml_file_path = "graph.gml"
     nx.write_gml(G, gml_file_path)
-    
+
     # Read the GML file content
     with open(gml_file_path, "r") as gml_file:
         gml_data = gml_file.read()
-    
+
     # Display GML file content (optional, for verification)
     st.write("GML FILE CONTENT")
-    
+
     # Add a download button for the GML file
     st.download_button(
         label="Download GML File",
@@ -763,5 +765,5 @@ elif selected == "WM to GML":
         file_name="graph.gml",
         mime="text/gml"
     )
-    
+
     st.code(gml_data, language="gml")

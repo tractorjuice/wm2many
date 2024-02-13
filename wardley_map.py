@@ -1,6 +1,6 @@
 import re
-   
-   
+
+
 # your WardleyMap class here...
 class WardleyMap():
 
@@ -25,39 +25,39 @@ class WardleyMap():
         self.notes = []
         self.style = None
         self.warnings = []
-   
+
         # And load:
         for cl in owm.splitlines():
             cl = cl.strip()
             if not cl:
                 continue
-                
+
             elif cl.startswith('#'):
                 # Skip comments...
                 continue
-                
+
             elif cl.startswith('//'):
                 # Skip comments...
                 continue
-                
+
             elif cl.startswith('annotation '):
                 warning_message = "Displaying annotation not supported yet"
                 if warning_message not in self.warnings:
                     self.warnings.append(warning_message)
                 continue
-                
+
             elif cl.startswith('annotations '):
                 warning_message = "Displaying annotations not supported yet"
                 if warning_message not in self.warnings:
                     self.warnings.append(warning_message)
                 continue
-                
+
             elif cl.startswith('market '):
                 warning_message = "Displaying market not supported yet"
                 if warning_message not in self.warnings:
                     self.warnings.append(warning_message)
                 continue
-  
+
             elif cl.startswith('pipeline '):
                 match = self._pipeline_regex.search(cl)
                 if match != None:
@@ -73,21 +73,21 @@ class WardleyMap():
                     continue
                 else:
                     self.warnings.append("Could not parse pipeline: %s" % cl)
-                
+
             elif cl.startswith('evolution '):
                 warning_message = "Displaying evolution not supported yet"
                 if warning_message not in self.warnings:
                     self.warnings.append(warning_message)
                     continue
-                    
+
             if cl.startswith('title '):
                 self.title = cl.split(' ', maxsplit=1)[1]
                 continue
-                
+
             elif cl.startswith('style '):
                 self.style = cl.split(' ', maxsplit=1)[1]
                 continue
-                
+
             elif cl.startswith('anchor ') or cl.startswith('component '):
                 # Use RegEx to split into fields:
                 match = self._node_regex.search(cl)
@@ -111,7 +111,7 @@ class WardleyMap():
                     self.nodes[node['title']] = node
                 else:
                     self.warnings.append("Could not parse component line: %s" % cl)
-            
+
             elif cl.startswith('evolve '):
                 match = self._evolve_regex.search(cl)
                 if match != None:
@@ -125,7 +125,7 @@ class WardleyMap():
                         evolve['label_x'] = float(matches[3])
                     else:
                         evolve['label_x'] = 2
-                        
+
                     if matches[4] is not None:
                         evolve['label_y'] = float(matches[4])
                     else:
@@ -136,7 +136,7 @@ class WardleyMap():
                     continue
                 else:
                     self.warnings.append("Could not parse evolve line: %s" % cl)
-                    
+
             elif "->" in cl:
                 edge_parts = cl.split('->')
                 if len(edge_parts) != 2:
@@ -144,7 +144,7 @@ class WardleyMap():
                     continue
                 n_from, n_to = edge_parts
                 self.edges.append([n_from.strip(), n_to.strip()])
- 
+
             elif "+<>" in cl:
                 edge_parts = cl.split('+<>')
                 if len(edge_parts) != 2:
@@ -178,9 +178,10 @@ class WardleyMap():
                 self.warnings.append("Could not parse line: %s" % cl)
 
         self.warnings = list(set(self.warnings))
-                
+
+
 def wardley(map):
-    
+
     # Parse the OWM syntax:
     wm = WardleyMap(map)
 

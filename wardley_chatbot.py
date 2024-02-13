@@ -4,16 +4,17 @@ from langchain_community.callbacks import get_openai_callback
 from langchain_community.chat_models import PromptLayerChatOpenAI
 import requests, os
 
+
 def get_owm_map(map_id):
     url = f"https://api.onlinewardleymaps.com/v1/maps/fetch?id={map_id}"
-    
+
     try:
         response = requests.get(url)
-        
+
         # Check if the response status code is 200 (successful)
         if response.status_code == 200:
             map_data = response.json()
-            
+
             # Check if the expected data is present in the response JSON
             if "text" in map_data:
                 map_text = map_data["text"]
@@ -23,11 +24,11 @@ def get_owm_map(map_id):
         else:
             st.warning(f"The API request failed with status code {response.status_code}.")
             return []
-    
+
     except requests.exceptions.RequestException as e:
         st.warning(f"An error occurred while making the API request: {e}")
         return []
-    
+
     return(map_text)
 
 def get_messages(map_text):
@@ -36,7 +37,7 @@ def get_messages(map_text):
             "role": "system",
             "content": f"""
             As a chatbot, analyze the provided Wardley Map and offer insights and recommendations based on its components.
-             
+
             Wardley Map Definition using RegEx:
 
             RegEx	Description
@@ -51,7 +52,7 @@ def get_messages(map_text):
             (inertia)	Identifies inertia within the Wardley Map.
             (\\[*)(\\[)(\\d+(?:\\.\\d{1,})*)(\\,\\s*)(\\d+(?:\\.\\d{1,}))(\\])(\\]*)	Identifies the coordinates for the location within the Wardley Map.
             (\\s*[a-zA-Z0-9\\s*]+)(\\-\\>)(\\s*[a-zA-Z0-9\\s*]+)	Identifies links between components.
-            
+
             Suggestions:
             Request the Wardley Map for analysis
             Explain the analysis process for a Wardley Map
@@ -86,20 +87,20 @@ def get_messages(map_text):
 def get_chatgpt_response(messages, model):
     OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
     os.environ["PROMPTLAYER_API_KEY"] = st.secrets["PROMPTLAYER"]
-    
+
     # Convert messages to corresponding SystemMessage, HumanMessage, and AIMessage objects
     new_messages = []
     for message in messages:
         role = message['role']
         content = message['content']
-        
+
         if role == 'system':
             new_messages.append(SystemMessage(content=content))
         elif role == 'user':
             new_messages.append(HumanMessage(content=content))
         elif role == 'assistant':
             new_messages.append(AIMessage(content=content))
-    
+
     chat = PromptLayerChatOpenAI(
         openai_api_key=OPENAI_API_KEY,
         model_name=model,
@@ -118,7 +119,7 @@ def get_chatgpt_response(messages, model):
         st.error("Error")
         return "Error: response not found"
 
-  
+
 def update_chat(messages, role, content):
     messages.append({"role": role, "content": content})
     return messages
