@@ -26,6 +26,7 @@ map_dict = {
 	"Fixed Penalty Notices": "gTTfD4r2mORudVFKge"
 }
 
+
 def reset_map():
 	st.session_state['messages'] = []
 	st.session_state['total_tokens_used'] = 0
@@ -36,15 +37,15 @@ def reset_map():
 
 
 def swap_xy(xy):
-  new_xy = re.findall("\[(.*?)\]", xy)
-  if new_xy:
-	match = new_xy[0]
-	match = match.split(sep = ",")
-	match = match[::-1]
-	new_xy = ('[' + match[0].strip() + ',' + match[1] + ']')
-	return (new_xy)
-  else:
-	new_xy=""
+	new_xy = re.findall("\[(.*?)\]", xy)
+	if new_xy:
+		match = new_xy[0]
+		match = match.split(sep = ",")
+		match = match[::-1]
+		new_xy = ('[' + match[0].strip() + ',' + match[1] + ']')
+		return (new_xy)
+	else:
+		new_xy=""
 	return (new_xy)
 
 
