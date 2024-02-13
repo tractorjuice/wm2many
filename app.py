@@ -1,7 +1,6 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
-import os, requests, re, json, toml
-from ast import Index
+import os, re, json, toml
 from networkx.readwrite import json_graph
 from pyvis.network import Network
 import networkx as nx

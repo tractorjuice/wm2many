@@ -1,9 +1,8 @@
 import streamlit as st
-from langchain_community.chat_models import ChatOpenAI
 from langchain.schema import AIMessage, HumanMessage, SystemMessage
 from langchain_community.callbacks import get_openai_callback
 from langchain_community.chat_models import PromptLayerChatOpenAI
-import requests, re, os
+import requests, os
 
 def get_owm_map(map_id):
     url = f"https://api.onlinewardleymaps.com/v1/maps/fetch?id={map_id}"
