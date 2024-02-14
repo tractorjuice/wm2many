@@ -314,6 +314,7 @@ if selected == "JSON to TOML":
 	st.write("			")
 	st.write("Let's convert your Wardley Map in JSON to TOML")
 	st.write("			")
+
 	json_file = st.file_uploader("UPLOAD JSON FILE")
 	st.info("👆 Upload your json file.")
 
@@ -354,7 +355,6 @@ elif selected == "WM to JSON":
 	st.write("			")
 
 	wardley_map_json = convert_owm2json(st.session_state.map_text)
-
 	st.write("JSON FILE CONTENT")
 
 	json_file_name = map_id + '.json'
