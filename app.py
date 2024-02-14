@@ -8,7 +8,6 @@ import streamlit.components.v1 as components
 from github import Github
 import base64
 from wardleymap import wardley, get_owm_map
-#from wardley_chatbot import get_owm_map
 
 API_ENDPOINT = "https://api.onlinewardleymaps.com/v1/maps/fetch?id="
 GITHUB = st.secrets["GITHUB"]
