@@ -1,11 +1,10 @@
+import os, re, json, toml, base64
 import streamlit as st
+import streamlit.components.v1 as components
 from streamlit_option_menu import option_menu
-import os, re, json, toml
 from pyvis.network import Network
 import networkx as nx
-import streamlit.components.v1 as components
 from github import Github
-import base64
 from wardleymap import wardley, get_owm_map, convert_owm2json, convert_owm2toml, convert_owm2cypher, convert_owm2graph
 
 API_ENDPOINT = "https://api.onlinewardleymaps.com/v1/maps/fetch?id="
@@ -44,8 +43,7 @@ def swap_xy(xy):
 		match = match[::-1]
 		new_xy = ('[' + match[0].strip() + ',' + match[1] + ']')
 		return (new_xy)
-	else:
-		new_xy=""
+	new_xy=""
 	return (new_xy)
 
 
@@ -333,7 +331,7 @@ if selected == "JSON to TOML":
 	)
 	json_file = st.file_uploader("UPLOAD JSON FILE")
 	st.info(
-		f"""
+		"""
 				👆 Upload your json file.
 
 				"""
