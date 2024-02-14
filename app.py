@@ -25,6 +25,7 @@ map_dict = {
 }
 
 
+# Reset the map on page reload
 def reset_map():
 	st.session_state['messages'] = []
 	st.session_state['total_tokens_used'] = 0
@@ -34,6 +35,7 @@ def reset_map():
 	st.session_state['disabled_buttons'] = []
 
 
+# Swap coordinates to x,y
 def swap_xy(xy):
 	new_xy = re.findall("\[(.*?)\]", xy)
 	if new_xy:
