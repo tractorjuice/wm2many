@@ -398,10 +398,11 @@ elif selected == "WM to JSON":
 	)
 
 	# Parse the Wardley map text
-	parsed_map = parse_wardley_map(st.session_state.map_text)
+	#parsed_map = parse_wardley_map(st.session_state.map_text)
 
 	# Convert the parsed map to JSON
-	wardley_map_json = json.dumps(parsed_map, indent=2)
+	wardley_map_json = convert_owm2json(st.session_state.map_text)
+	#wardley_map_json = json.dumps(parsed_map, indent=2)
 	st.write("JSON FILE CONTENT")
 
 	json_file_name = map_id + '.json'
