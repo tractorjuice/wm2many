@@ -1,7 +1,6 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
 import os, re, json, toml
-from networkx.readwrite import json_graph
 from pyvis.network import Network
 import networkx as nx
 import streamlit.components.v1 as components
@@ -397,7 +396,7 @@ elif selected == "WM to JSON":
 	)
 
 	wardley_map_json = convert_owm2json(st.session_state.map_text)
-	
+
 	st.write("JSON FILE CONTENT")
 
 	json_file_name = map_id + '.json'
@@ -621,7 +620,7 @@ elif selected == "WM to GRAPH":
 
 	# Convert the graph to a JSON format for download
 	graph_json_str = convert_owm2graph(st.session_state.map_text)
-	
+
 	st.write("JSON FILE CONTENT")
 
 	# Add a download button for the JSON file
@@ -752,4 +751,3 @@ elif selected == "WM to GML":
 	)
 
 	st.code(gml_data, language="gml")
-
