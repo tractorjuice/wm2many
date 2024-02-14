@@ -7,7 +7,8 @@ import networkx as nx
 import streamlit.components.v1 as components
 from github import Github
 import base64
-from wardley_map import wardley
+#from wardley_map import wardley
+from wardleymap import wardley
 from wardley_chatbot import get_owm_map
 
 API_ENDPOINT = "https://api.onlinewardleymaps.com/v1/maps/fetch?id="
