@@ -41,8 +41,8 @@ def swap_xy(xy):
 		match = new_xy[0]
 		match = match.split(sep = ",")
 		match = match[::-1]
-		new_xy = ('[' + match[0].strip() + ',' + match[1] + ']')
-		return (new_xy)
+		new_xy = '[' + match[0].strip() + ',' + match[1] + ']'
+		return new_xy
 	new_xy=""
 	return new_xy
 
