@@ -534,7 +534,7 @@ elif selected == "WM to GRAPH":
 	node_size = 5  # Adjust this value as needed to make the nodes smaller or larger
 	font_size = 6
 
-	# Convert the Wardley map text to JSON
+	# Convert the Wardley map text to GRAPH
 	parsed_map = parse_wardley_map(st.session_state.map_text)
 
 	# Initialize the graph
@@ -620,8 +620,9 @@ elif selected == "WM to GRAPH":
 	components.html(html_content, height=1200)
 
 	# Convert the graph to a JSON format for download
-	graph_json = json_graph.node_link_data(G)
-	graph_json_str = json.dumps(graph_json, indent=2)
+	graph_json_str = convert_owm2graph(st.session_state.map_text)
+	#graph_json = json_graph.node_link_data(G)
+	#graph_json_str = json.dumps(graph_json, indent=2)
 
 	st.write("JSON FILE CONTENT")
 
