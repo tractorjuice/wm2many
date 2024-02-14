@@ -621,9 +621,7 @@ elif selected == "WM to GRAPH":
 
 	# Convert the graph to a JSON format for download
 	graph_json_str = convert_owm2graph(st.session_state.map_text)
-	#graph_json = json_graph.node_link_data(G)
-	#graph_json_str = json.dumps(graph_json, indent=2)
-
+	
 	st.write("JSON FILE CONTENT")
 
 	# Add a download button for the JSON file
