@@ -311,31 +311,12 @@ if 'map_text' in st.session_state:
 
 if selected == "JSON to TOML":
 	st.title("JSON to TOML file converter")
-	st.write(
-		"""
-
-			"""
-	)
-
-	st.write(
-		"""
-	Let's convert your Wardley Map in JSON to TOML
-
-			"""
-	)
-
-	st.write(
-		"""
-
-			"""
-	)
+	st.write("			")
+	st.write("Let's convert your Wardley Map in JSON to TOML")
+	st.write("			")
+	
 	json_file = st.file_uploader("UPLOAD JSON FILE")
-	st.info(
-		"""
-				👆 Upload your json file.
-
-				"""
-	)
+	st.info("				👆 Upload your json file.")
 
 	if json_file is not None:
 		json_text = json_file.read()
@@ -351,20 +332,9 @@ if selected == "JSON to TOML":
 
 elif selected == "WM to TOML":
 	st.title("WM to TOML Converter")
-	st.write(
-		"""
-			"""
-	)
-	st.write(
-		"""
-	Let's convert your Wardley Map in WM to TOML
-			"""
-	)
-
-	st.write(
-		"""
-			"""
-	)
+	st.write("			")
+	st.write("Let's convert your Wardley Map in WM to TOML			")
+	st.write("			")
 
 	wardley_map_toml = convert_owm2toml(st.session_state.map_text)
 	st.write("TOML FILE CONTENT")
@@ -380,20 +350,9 @@ elif selected == "WM to TOML":
 
 elif selected == "WM to JSON":
 	st.title("WM to JSON File Converter")
-	st.write(
-		"""
-			"""
-	)
-	st.write(
-		"""
-	Let's convert your Wardley Map in WM to JSON
-			"""
-	)
-
-	st.write(
-		"""
-			"""
-	)
+	st.write("			")
+	st.write("Let's convert your Wardley Map in WM to JSON")
+	st.write("			")
 
 	wardley_map_json = convert_owm2json(st.session_state.map_text)
 
@@ -410,11 +369,7 @@ elif selected == "WM to JSON":
 
 elif selected == "WM to CYPHER":
 	st.title("WM to CYPHER Converter")
-	st.write(
-		"""
-	Let's convert your Wardley Map in WM to Cypher queries for Neo4j
-			"""
-	)
+	st.write("""Let's convert your Wardley Map in WM to Cypher queries for Neo4j""")
 
 	node_size = 5  # Adjust this value as needed to make the nodes smaller or larger
 	font_size = 6
@@ -524,11 +479,7 @@ elif selected == "WM to CYPHER":
 elif selected == "WM to GRAPH":
 
 	st.title("WM to GRAPH Converter")
-	st.write(
-		"""
-	Let's convert your Wardley Map in WM to GRAPH and visualize it.
-			"""
-	)
+	st.write("""Let's convert your Wardley Map in WM to GRAPH and visualize it.""")
 
 	node_size = 5  # Adjust this value as needed to make the nodes smaller or larger
 	font_size = 6
