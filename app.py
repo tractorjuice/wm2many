@@ -509,17 +509,7 @@ elif selected == "WM to CYPHER":
 	components.html(html_content, height=1200)
 
 	# Generate Cypher queries for nodes
-	for component in parsed_map["components"]:
-		query = f"CREATE (:{component['name']} {{stage: '{component['evolution']}', visibility: '{component['visibility']}'}})"
-		cypher_queries.append(query)
-
-	# Generate Cypher queries for relationships
-	for link in parsed_map["links"]:
-		query = f"MATCH (a), (b) WHERE a.name = '{link['src']}' AND b.name = '{link['tgt']}' CREATE (a)-[:RELATES_TO]->(b)"
-		cypher_queries.append(query)
-
-	# Combine all queries into a single script
-	cypher_script = "\n".join(cypher_queries)
+	cypher_script = convert_owm2cypher(st.session_state.map_text)
 
 	# Display Cypher script
 	st.write("CYPHER FILE CONTENT")
