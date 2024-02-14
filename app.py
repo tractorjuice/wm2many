@@ -44,7 +44,7 @@ def swap_xy(xy):
 		new_xy = ('[' + match[0].strip() + ',' + match[1] + ']')
 		return (new_xy)
 	new_xy=""
-	return (new_xy)
+	return new_xy
 
 
 def parse_wardley_map(map_text):
@@ -314,9 +314,8 @@ if selected == "JSON to TOML":
 	st.write("			")
 	st.write("Let's convert your Wardley Map in JSON to TOML")
 	st.write("			")
-	
 	json_file = st.file_uploader("UPLOAD JSON FILE")
-	st.info("				👆 Upload your json file.")
+	st.info("👆 Upload your json file.")
 
 	if json_file is not None:
 		json_text = json_file.read()
