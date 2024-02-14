@@ -368,7 +368,7 @@ elif selected == "WM to JSON":
 
 elif selected == "WM to CYPHER":
 	st.title("WM to CYPHER Converter")
-	st.write("""Let's convert your Wardley Map in WM to Cypher queries for Neo4j""")
+	st.write("Let's convert your Wardley Map in WM to Cypher queries for Neo4j")
 
 	node_size = 5  # Adjust this value as needed to make the nodes smaller or larger
 	font_size = 6
@@ -478,7 +478,7 @@ elif selected == "WM to CYPHER":
 elif selected == "WM to GRAPH":
 
 	st.title("WM to GRAPH Converter")
-	st.write("""Let's convert your Wardley Map in WM to GRAPH and visualize it.""")
+	st.write("Let's convert your Wardley Map in WM to GRAPH and visualize it.")
 
 	node_size = 5  # Adjust this value as needed to make the nodes smaller or larger
 	font_size = 6
@@ -587,11 +587,7 @@ elif selected == "WM to GRAPH":
 elif selected == "WM to GML":
 
 	st.title("WM to GML Converter")  # Update the title to reflect the new functionality
-	st.write(
-		"""
-	Let's convert your Wardley Map in WM to GML format and visualize it.
-			"""
-	)
+	st.write("Let's convert your Wardley Map in WM to GML format and visualize it.")
 
 	node_size = 5  # Adjust this value as needed to make the nodes smaller or larger
 	font_size = 6
