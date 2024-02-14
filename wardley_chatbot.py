@@ -5,32 +5,6 @@ from langchain_community.chat_models import PromptLayerChatOpenAI
 import requests, os
 
 
-def get_owm_map(map_id):
-	url = f"https://api.onlinewardleymaps.com/v1/maps/fetch?id={map_id}"
-
-	try:
-		response = requests.get(url)
-
-		# Check if the response status code is 200 (successful)
-		if response.status_code == 200:
-			map_data = response.json()
-
-			# Check if the expected data is present in the response JSON
-			if "text" in map_data:
-				map_text = map_data["text"]
-			else:
-				st.warning("The response JSON does not contain the expected 'text' key.")
-				return []
-		else:
-			st.warning(f"The API request failed with status code {response.status_code}.")
-			return []
-
-	except requests.exceptions.RequestException as e:
-		st.warning(f"An error occurred while making the API request: {e}")
-		return []
-
-	return(map_text)
-
 def get_messages(map_text):
 	messages = [
 		{
