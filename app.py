@@ -75,7 +75,7 @@ def convert_owm2json(map_text):
 def convert_owm2yaml(map_text):
     # Convert the parsed map dictionary to YAML string
     parsed_map = parse_wardley_map(map_text)
-    yaml_str = yaml.dumps(parsed_map, default_flow_style=False)
+    yaml_str = yaml.dump(parsed_map, default_flow_style=False)
     return yaml_str
 
 
