@@ -9,12 +9,12 @@ from github import Github
 from wardley_map import (
     create_wardley_map_plot,
     get_owm_map,
-    #convert_owm2json,
-    #convert_owm2toml,
+    convert_owm2json,
+    convert_owm2toml,
     #convert_owm2cypher,
     #convert_owm2graph,
-    #convert_owm2yaml,
-    parse_wardley_map
+    convert_owm2yaml,
+    #parse_wardley_map
 )
 
 API_ENDPOINT = "https://api.onlinewardleymaps.com/v1/maps/fetch?id="
@@ -55,6 +55,53 @@ def swap_xy(xy):
         return new_xy
     new_xy = ""
     return new_xy
+
+
+# Convert OWM to TOML
+def convert_owm2toml(map_text):
+    parsed_map = parse_wardley_map(map_text)
+    owm_toml = toml.dumps(parsed_map)
+    return owm_toml
+
+
+# Convert OWM to JSON
+def convert_owm2json(map_text):
+    parsed_map = parse_wardley_map(map_text)
+    owm_json = json.dumps(parsed_map, indent=2)
+    return owm_json
+
+
+# Convert OWM to YAML
+def convert_owm2yaml(map_text):
+    # Convert the parsed map dictionary to YAML string
+    parsed_map = parse_wardley_map(map_text)
+    yaml_str = yaml.dump(parsed_map, default_flow_style=False)
+    return yaml_str
+
+
+# Convert OWM to Cypher
+def convert_owm2cypher(map_text):
+
+    # Convert the Wardley map text to JSON (using your existing conversion logic)
+    parsed_map = parse_wardley_map(map_text)
+
+    # Initialize Cypher query list
+    cypher_queries = []
+
+    # Generate Cypher queries for nodes
+    for component in parsed_map["components"]:
+        query = f"CREATE (:{component['name']} {{stage: '{component['evolution']}', visibility: '{component['visibility']}'}})"
+        cypher_queries.append(query)
+
+    # Generate Cypher queries for relationships
+    for link in parsed_map["links"]:
+        query = f"MATCH (a), (b) WHERE a.name = '{link['src']}' AND b.name = '{link['tgt']}' CREATE (a)-[:RELATES_TO]->(b)"
+        cypher_queries.append(query)
+
+    # Combine all queries into a single script
+    cypher_script = "\n".join(cypher_queries)
+
+    return cypher_script
 
 
 def old_parse_wardley_map(map_text):
