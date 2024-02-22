@@ -9,11 +9,11 @@ from github import Github
 from wardley_map import (
     create_wardley_map_plot,
     get_owm_map,
-    convert_owm2json,
-    convert_owm2toml,
+    #convert_owm2json,
+    #convert_owm2toml,
     #convert_owm2cypher,
     #convert_owm2graph,
-    convert_owm2yaml,
+    #convert_owm2yaml,
     #parse_wardley_map
 )
 
