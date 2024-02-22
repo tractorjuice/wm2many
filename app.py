@@ -901,11 +901,8 @@ elif selected == "WM to YAML":
     st.title("WM to YAML Converter")
     st.write("Let's convert your Wardley Map in WM to YAML format.")
 
-    # Use the existing parsed map data
-    parsed_map = parse_wardley_map(st.session_state.map_text)
-
     # Convert the parsed map to YAML
-    wardley_map_yaml = convert_owm2yaml(parsed_map)
+    wardley_map_yaml = convert_owm2yaml(st.session_state.map_text)
 
     # Display YAML file content
     st.write("YAML FILE CONTENT")
