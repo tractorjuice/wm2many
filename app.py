@@ -56,7 +56,7 @@ def swap_xy(xy):
     return new_xy
 
 
-def parse__map(map_text):
+def parse_wardley_map(map_text):
     lines = map_text.strip().split("\n")
     (
         title,
