@@ -704,27 +704,28 @@ elif selected == "WM to GML":
 		mime="text/gml"
 	)
 
-elif selected == "WM to YAML":
-    st.title("WM to YAML Converter")
-    st.write("Let's convert your Wardley Map in WM to YAML format.")
-
-    # Use the existing parsed map data
-    parsed_map = parse_wardley_map(st.session_state.map_text)
-
-    # Convert the parsed map to YAML
-    wardley_map_yaml = convert_owm2yaml(parsed_map)
-
-    # Display YAML file content
-    st.write("YAML FILE CONTENT")
-    st.code(wardley_map_yaml, language="yaml")
-
-    # Add a download button for the YAML file
-    st.download_button(
-        label="Download YAML File",
-        data=wardley_map_yaml,
-        file_name="wardley_map.yaml",
-        mime="text/yaml"
-    )
-
-
 	st.code(gml_data, language="gml")
+
+# Handle WM to YAML option
+elif selected == "WM to YAML":
+	st.title("WM to YAML Converter")
+	st.write("Let's convert your Wardley Map in WM to YAML format.")
+	
+	# Use the existing parsed map data
+	parsed_map = parse_wardley_map(st.session_state.map_text)
+	
+	# Convert the parsed map to YAML
+	wardley_map_yaml = convert_owm2yaml(parsed_map)
+	
+	# Display YAML file content
+	st.write("YAML FILE CONTENT")
+	
+	# Add a download button for the YAML file
+	st.download_button(
+	label="Download YAML File",
+	data=wardley_map_yaml,
+	file_name="wardley_map.yaml",
+	mime="text/yaml"
+	)
+	
+	st.code(wardley_map_yaml, language="yaml")
