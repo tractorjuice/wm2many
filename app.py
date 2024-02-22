@@ -11,8 +11,8 @@ from wardley_map import (
     get_owm_map,
     convert_owm2json,
     convert_owm2toml,
-    #convert_owm2cypher,
-    #convert_owm2graph,
+    convert_owm2cypher,
+    convert_owm2graph,
     #convert_owm2yaml,
     #parse_wardley_map
 )
