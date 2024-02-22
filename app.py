@@ -3,6 +3,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 from streamlit_option_menu import option_menu
 from pyvis.network import Network
+import yaml
 import networkx as nx
 from github import Github
 from wardleymap import wardley, get_owm_map, convert_owm2json, convert_owm2toml, convert_owm2cypher, convert_owm2graph
@@ -219,6 +220,13 @@ def parse_wardley_map(map_text):
 		"comments": comments,
 	}
 
+
+def convert_owm2yaml(parsed_map):
+    # Convert the parsed map dictionary to YAML string
+    yaml_str = yaml.dump(parsed_map, default_flow_style=False)
+    return yaml_str
+
+
 st.set_page_config(page_title="Chat with your Wardley Map", layout="wide")
 
 if 'map_text' not in st.session_state:
@@ -230,7 +238,7 @@ if 'current_map_id' not in st.session_state:
 with st.sidebar:
 	selected = option_menu(
 		"Choose conversion",
-		["WM to JSON", "WM to TOML", "WM to GRAPH", "WM to CYPHER",  "WM to GML", "JSON to TOML"],
+		["WM to JSON", "WM to TOML", "WM to YAML", "WM to GRAPH", "WM to CYPHER",  "WM to GML", "JSON to TOML"],
 		icons=["gear"] * 6,
 		menu_icon="robot",
 		default_index=0,
@@ -695,5 +703,28 @@ elif selected == "WM to GML":
 		file_name="graph.gml",
 		mime="text/gml"
 	)
+
+elif selected == "WM to YAML":
+    st.title("WM to YAML Converter")
+    st.write("Let's convert your Wardley Map in WM to YAML format.")
+
+    # Use the existing parsed map data
+    parsed_map = parse_wardley_map(st.session_state.map_text)
+
+    # Convert the parsed map to YAML
+    wardley_map_yaml = convert_owm2yaml(parsed_map)
+
+    # Display YAML file content
+    st.write("YAML FILE CONTENT")
+    st.code(wardley_map_yaml, language="yaml")
+
+    # Add a download button for the YAML file
+    st.download_button(
+        label="Download YAML File",
+        data=wardley_map_yaml,
+        file_name="wardley_map.yaml",
+        mime="text/yaml"
+    )
+
 
 	st.code(gml_data, language="gml")
