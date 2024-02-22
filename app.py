@@ -13,7 +13,7 @@ from wardley_map import (
     convert_owm2toml,
     convert_owm2cypher,
     convert_owm2graph,
-    convert_owm2yaml,
+    #convert_owm2yaml,
 )
 
 API_ENDPOINT = "https://api.onlinewardleymaps.com/v1/maps/fetch?id="
@@ -275,8 +275,9 @@ def parse__map(map_text):
     }
 
 
-def convert_owm2yaml(parsed_map):
+def convert_owm2yaml(map_text):
     # Convert the parsed map dictionary to YAML string
+    parsed_map = parse_wardley_map(map_text)
     yaml_str = yaml.dump(parsed_map, default_flow_style=False)
     return yaml_str
 
