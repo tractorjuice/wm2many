@@ -6,8 +6,8 @@ from pyvis.network import Network
 import yaml
 import networkx as nx
 from github import Github
-from wardley_map import (
-    wardley,
+from wardleymap import (
+    WardleyMap,
     get_owm_map,
     convert_owm2json,
     convert_owm2toml,
@@ -55,7 +55,7 @@ def swap_xy(xy):
     return new_xy
 
 
-def parse_wardley_map(map_text):
+def parse__map(map_text):
     lines = map_text.strip().split("\n")
     (
         title,
@@ -280,7 +280,7 @@ def convert_owm2yaml(parsed_map):
     return yaml_str
 
 
-st.set_page_config(page_title="Chat with your Wardley Map", layout="wide")
+st.set_page_config(page_title="Chat with your  Map", layout="wide")
 
 if "map_text" not in st.session_state:
     st.session_state["map_text"] = []
@@ -315,7 +315,7 @@ except GithubException as e:
 map_selection = st.sidebar.radio(
     "Map Selection",
     ("Select from GitHub", "Select from List", "Enter Map ID"),
-    help="Select GitHub to get a list of Simon Wardley's latest research.\n\nSelect from list to get predefined maps.\n\nSelect Enter Map ID to provide your own Onlinewardleymaps id",
+    help="Select GitHub to get a list of Simon 's latest research.\n\nSelect from list to get predefined maps.\n\nSelect Enter Map ID to provide your own Onlinewardleymaps id",
     key="map_selection",
 )
 
@@ -377,7 +377,7 @@ if "map_text" in st.session_state:
             st.markdown(f"### {TITLE}")
 
         # Get the Wardley Map
-        map, map_plot = wardley(map=map_text)
+        map, map_plot = WardleyMap(map=map_text)
 
         # Display any warnings drawing the map
         if map.warnings:
