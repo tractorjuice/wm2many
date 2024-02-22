@@ -104,7 +104,7 @@ def convert_owm2cypher(map_text):
     return cypher_script
 
 
-def old_parse_wardley_map(map_text):
+def parse_wardley_map(map_text):
     lines = map_text.strip().split("\n")
     (
         title,
