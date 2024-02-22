@@ -9,11 +9,11 @@ from github import Github
 from wardley_map import (
     create_wardley_map_plot,
     get_owm_map,
-    #convert_owm2json,
-    #convert_owm2toml,
+    convert_owm2json,
+    convert_owm2toml,
     convert_owm2cypher,
     convert_owm2graph,
-    #convert_owm2yaml,
+    convert_owm2yaml,
     #parse_wardley_map
 )
 
@@ -55,26 +55,7 @@ def swap_xy(xy):
         return new_xy
     new_xy = ""
     return new_xy
-
-# Convert OWM to TOML
-def convert_owm2toml(map_text):
-    parsed_map = parse_wardley_map(map_text)
-    owm_toml = toml.dumps(parsed_map)
-    return owm_toml
-
-
-# Convert OWM to JSON
-def convert_owm2json(map_text):
-    parsed_map = parse_wardley_map(map_text)
-    owm_json = json.dumps(parsed_map, indent=2)
-    return owm_json
-
-# Convert OWM to YAML
-def convert_owm2yaml(map_text):
-    # Convert the parsed map dictionary to YAML string
-    parsed_map = parse_wardley_map(map_text)
-    yaml_str = yaml.dump(parsed_map, default_flow_style=False)
-    return yaml_str
+    
 
 def parse_wardley_map(map_text):
     lines = map_text.strip().split("\n")
