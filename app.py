@@ -19,7 +19,7 @@ API_ENDPOINT = "https://api.onlinewardleymaps.com/v1/maps/fetch?id="
 GITHUB = st.secrets["GITHUB"]
 GITHUBREPO = "swardley/MAP-REPOSITORY"
 DEBUG = True  # True to overwrite files that already exist
-map_id = None
+MAP_ID = None
 
 # Dictionary of map IDs with user-friendly names
 map_dict = {
@@ -307,10 +307,10 @@ with st.sidebar:
 
 try:
     g = Github(GITHUB)
-    repo = g.get_repo(GITHUBREPO)
+    REPO = g.get_repo(GITHUBREPO)
 except GithubException as e:
     st.error(f"An error occurred contacting GitHub: {e}")
-    repo = None
+    REPO = None
 
 map_selection = st.sidebar.radio(
     "Map Selection",
@@ -321,17 +321,17 @@ map_selection = st.sidebar.radio(
 
 if map_selection == "Select from List":
     selected_name = st.sidebar.selectbox("Select Map", list(map_dict.keys()))
-    map_id = map_dict[selected_name]
+    MAP_ID = map_dict[selected_name]
 
 elif map_selection == "Select from GitHub":
     with st.spinner("Fetching latest maps from GitHub"):
         if "file_list" not in st.session_state:
             st.session_state.file_list = []
-            contents = repo.get_contents("")
+            contents = REPO.get_contents("")
             while contents:
                 file_item = contents.pop(0)
                 if file_item.type == "dir":
-                    contents.extend(repo.get_contents(file_item.path))
+                    contents.extend(REPO.get_contents(file_item.path))
                 else:
                     file_name = file_item.name
                     # Check if the file name starts with a '.', has no extension, or is named 'LICENSE'
@@ -344,37 +344,37 @@ elif map_selection == "Select from GitHub":
 
     if "file_list" in st.session_state:
         selected_file = st.sidebar.selectbox("Select a Map", st.session_state.file_list)
-        file_item = repo.get_contents(selected_file)
+        file_item = REPO.get_contents(selected_file)
         file_content = base64.b64decode(file_item.content).decode("utf-8")
-        map_id = selected_file
+        MAP_ID = selected_file
         st.session_state["file_content"] = file_content
 else:
-    map_id = st.sidebar.text_input("Enter Map ID:", key="map_id_input")
-    selected_name = map_id
+    MAP_ID = st.sidebar.text_input("Enter Map ID:", key="map_id_input")
+    selected_name = MAP_ID
 
 if map_selection != "Select from GitHub":
-    if st.session_state.get("current_map_id") != map_id:
+    if st.session_state.get("current_map_id") != MAP_ID:
         reset_map()
         del st.session_state["messages"]
-        st.session_state["current_map_id"] = map_id
-        st.session_state["map_text"] = get_owm_map(map_id)
+        st.session_state["current_map_id"] = MAP_ID
+        st.session_state["map_text"] = get_owm_map(MAP_ID)
 
 if map_selection == "Select from GitHub":
-    if st.session_state.get("current_map_id") != map_id:
+    if st.session_state.get("current_map_id") != MAP_ID:
         reset_map()
-        st.session_state["current_map_id"] = map_id
+        st.session_state["current_map_id"] = MAP_ID
         st.session_state["map_text"] = st.session_state["file_content"]
 
 # Display the map in the sidebar
 if "map_text" in st.session_state:
     with st.sidebar:
-        title = "No Title"
+        TITLE = "No Title"
         map_text = st.session_state["map_text"]
         for line in map_text.split("\n"):
             if line.startswith("title"):
-                title = line.split("title ")[1]
-        if title:
-            st.markdown(f"### {title}")
+                TITLE = line.split("title ")[1]
+        if TITLE:
+            st.markdown(f"### {TITLE}")
 
         # Get the Wardley Map
         map, map_plot = wardley(map=map_text)
@@ -415,7 +415,7 @@ elif selected == "WM to TOML":
     wardley_map_toml = convert_owm2toml(st.session_state.map_text)
     st.write("TOML FILE CONTENT")
 
-    toml_file_name = map_id + ".toml"
+    toml_file_name = MAP_ID + ".toml"
     st.download_button(
         "DOWNLOAD TOML FILE", data=wardley_map_toml, file_name=toml_file_name
     )
@@ -431,7 +431,7 @@ elif selected == "WM to JSON":
     wardley_map_json = convert_owm2json(st.session_state.map_text)
     st.write("JSON FILE CONTENT")
 
-    json_file_name = map_id + ".json"
+    json_file_name = MAP_ID + ".json"
     st.download_button(
         "DOWNLOAD JSON FILE", data=wardley_map_json, file_name=json_file_name
     )
@@ -442,8 +442,8 @@ elif selected == "WM to CYPHER":
     st.title("WM to CYPHER Converter")
     st.write("Let's convert your Wardley Map in WM to Cypher queries for Neo4j")
 
-    node_size = 5  # Adjust this value as needed to make the nodes smaller or larger
-    font_size = 6
+    NODE_SIZE = 5  # Adjust this value as needed to make the nodes smaller or larger
+    FONT_SIZE = 6
 
     # Convert the Wardley map text to JSON (using your existing conversion logic)
     parsed_map = parse_wardley_map(st.session_state.map_text)
@@ -547,7 +547,7 @@ elif selected == "WM to CYPHER":
             "color", "#f68b24"
         )  # Use the color assigned based on the stage
         net.add_node(
-            node, label=node, x=x * 1700, y=-y * 1000, color=node_color, size=node_size
+            node, label=node, x=x * 1700, y=-y * 1000, color=node_color, size=NODE_SIZE
         )
 
     # Add edges to the PyVis network
@@ -555,9 +555,9 @@ elif selected == "WM to CYPHER":
         net.add_edge(src, tgt)
 
     # Save and display the network
-    output_path = "graph.html"
-    net.save_graph(output_path)
-    with open(output_path, "r", encoding="utf-8") as file:
+    OUTPUT_PATH = "graph.html"
+    net.save_graph(OUTPUT_PATH)
+    with open(OUTPUT_PATH, "r", encoding="utf-8") as file:
         html_content = file.read()
     components.html(html_content, height=1200)
 
@@ -582,8 +582,8 @@ elif selected == "WM to GRAPH":
     st.title("WM to GRAPH Converter")
     st.write("Let's convert your Wardley Map in WM to GRAPH and visualize it.")
 
-    node_size = 5  # Adjust this value as needed to make the nodes smaller or larger
-    font_size = 6
+    NODE_SIZE = 5  # Adjust this value as needed to make the nodes smaller or larger
+    FONT_SIZE = 6
 
     # Convert the Wardley map text to GRAPH
     parsed_map = parse_wardley_map(st.session_state.map_text)
@@ -684,7 +684,7 @@ elif selected == "WM to GRAPH":
             "color", "#f68b24"
         )  # Use the color assigned based on the stage
         net.add_node(
-            node, label=node, x=x * 1700, y=-y * 1000, color=node_color, size=node_size
+            node, label=node, x=x * 1700, y=-y * 1000, color=node_color, size=NODE_SIZE
         )
 
     # Add edges to the PyVis network
@@ -692,9 +692,9 @@ elif selected == "WM to GRAPH":
         net.add_edge(src, tgt)
 
     # Save and display the network
-    output_path = "graph.html"
-    net.save_graph(output_path)
-    with open(output_path, "r", encoding="utf-8") as file:
+    OUTPUT_PATH = "graph.html"
+    net.save_graph(OUTPUT_PATH)
+    with open(OUTPUT_PATH, "r", encoding="utf-8") as file:
         html_content = file.read()
     components.html(html_content, height=1200)
 
@@ -719,8 +719,8 @@ elif selected == "WM to GML":
     st.title("WM to GML Converter")  # Update the title to reflect the new functionality
     st.write("Let's convert your Wardley Map in WM to GML format and visualize it.")
 
-    node_size = 5  # Adjust this value as needed to make the nodes smaller or larger
-    font_size = 6
+    NODE_SIZE = 5  # Adjust this value as needed to make the nodes smaller or larger
+    FONT_SIZE = 6
 
     # Convert the Wardley map text to JSON
     parsed_map = parse_wardley_map(st.session_state.map_text)
@@ -821,7 +821,7 @@ elif selected == "WM to GML":
             "color", "#f68b24"
         )  # Use the color assigned based on the stage
         net.add_node(
-            node, label=node, x=x * 1700, y=-y * 1000, color=node_color, size=node_size
+            node, label=node, x=x * 1700, y=-y * 1000, color=node_color, size=NODE_SIZE
         )
 
     # Add edges to the PyVis network
@@ -829,9 +829,9 @@ elif selected == "WM to GML":
         net.add_edge(src, tgt)
 
     # Save and display the network
-    output_path = "graph.html"
-    net.save_graph(output_path)
-    with open(output_path, "r", encoding="utf-8") as file:
+    OUTPUT_PATH = "graph.html"
+    net.save_graph(OUTPUT_PATH)
+    with open(OUTPUT_PATH, "r", encoding="utf-8") as file:
         html_content = file.read()
     components.html(html_content, height=1200)
 
