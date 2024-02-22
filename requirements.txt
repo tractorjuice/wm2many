@@ -1,10 +1,11 @@
 streamlit
 streamlit-option-menu
-networkx
-pyvis
-pygithub
 langchain-community
 langchain-core
 langchain-openai
 langchain
+networkx
+pyvis
+pygithub
+pyyaml
 wardleymap
