@@ -13,7 +13,8 @@ from wardley_map import (
     convert_owm2toml,
     convert_owm2cypher,
     convert_owm2graph,
-    #convert_owm2yaml,
+    convert_owm2yaml,
+    parse_wardley_map
 )
 
 API_ENDPOINT = "https://api.onlinewardleymaps.com/v1/maps/fetch?id="
@@ -56,7 +57,7 @@ def swap_xy(xy):
     return new_xy
 
 
-def parse_wardley_map(map_text):
+def new_parse_wardley_map(map_text):
     lines = map_text.strip().split("\n")
     (
         title,
@@ -273,13 +274,6 @@ def parse_wardley_map(map_text):
         "annotations": annotations,
         "comments": comments,
     }
-
-
-def convert_owm2yaml(map_text):
-    # Convert the parsed map dictionary to YAML string
-    parsed_map = parse_wardley_map(map_text)
-    yaml_str = yaml.dump(parsed_map, default_flow_style=False)
-    return yaml_str
 
 
 st.set_page_config(page_title="Chat with your  Map", layout="wide")
