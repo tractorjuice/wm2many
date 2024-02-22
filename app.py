@@ -14,7 +14,7 @@ from wardley_map import (
     convert_owm2cypher,
     convert_owm2graph,
     convert_owm2yaml,
-    #parse_wardley_map
+    parse_wardley_map
 )
 
 API_ENDPOINT = "https://api.onlinewardleymaps.com/v1/maps/fetch?id="
@@ -55,9 +55,9 @@ def swap_xy(xy):
         return new_xy
     new_xy = ""
     return new_xy
-    
 
-def parse_wardley_map(map_text):
+
+def old_parse_wardley_map(map_text):
     lines = map_text.strip().split("\n")
     (
         title,
