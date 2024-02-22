@@ -378,7 +378,7 @@ if "map_text" in st.session_state:
             st.markdown(f"### {TITLE}")
 
         # Get the Wardley Map
-        map, map_plot = WardleyMap(map_text)
+        map = WardleyMap(map_text)
 
         # Display any warnings drawing the map
         if map.warnings:
