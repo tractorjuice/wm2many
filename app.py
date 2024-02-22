@@ -6,13 +6,14 @@ from pyvis.network import Network
 import yaml
 import networkx as nx
 from github import Github
-from wardleymap import (
+from wardley_map import (
     WardleyMap,
     get_owm_map,
     convert_owm2json,
     convert_owm2toml,
     convert_owm2cypher,
     convert_owm2graph,
+    convert_owm2yaml,
 )
 
 API_ENDPOINT = "https://api.onlinewardleymaps.com/v1/maps/fetch?id="
