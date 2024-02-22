@@ -7,7 +7,7 @@ import yaml
 import networkx as nx
 from github import Github
 from wardley_map import (
-    WardleyMap,
+    create_wardley_map_plot,
     get_owm_map,
     convert_owm2json,
     convert_owm2toml,
@@ -379,7 +379,7 @@ if "map_text" in st.session_state:
             st.markdown(f"### {TITLE}")
 
         # Get the Wardley Map
-        map = WardleyMap(map_text)
+        map = create_wardley_map_plot(map_text)
 
         # Display any warnings drawing the map
         if map.warnings:
