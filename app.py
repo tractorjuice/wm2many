@@ -6,7 +6,7 @@ from pyvis.network import Network
 import yaml
 import networkx as nx
 from github import Github
-from wardley_maps import (
+from wardleymap import (
     wardley,
     get_owm_map,
     convert_owm2json,
