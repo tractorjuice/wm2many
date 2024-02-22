@@ -836,11 +836,11 @@ elif selected == "WM to GML":
     components.html(html_content, height=1200)
 
     # Save the graph to a GML file
-    gml_file_path = "graph.gml"
-    nx.write_gml(G, gml_file_path)
+    GML_FILE_PATH = "graph.gml"
+    nx.write_gml(G, GML_FILE_PATH)
 
     # Read the GML file content
-    with open(gml_file_path, "r") as gml_file:
+    with open(GML_FILE_PATH, "r") as gml_file:
         gml_data = gml_file.read()
 
     # Display GML file content (optional, for verification)
