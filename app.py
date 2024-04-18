@@ -44,7 +44,7 @@ def reset_map():
     st.session_state["disabled_buttons"] = []
 
 
-st.set_page_config(page_title="Chat with your  Map", layout="wide")
+st.set_page_config(page_title="Convert Wardley Map", layout="wide")
 
 if "map_text" not in st.session_state:
     st.session_state["map_text"] = []
