@@ -695,7 +695,6 @@ elif selected == "Animate Map":
             nx.draw(G, pos, ax=ax, node_color=colors, with_labels=True)
     
         ani = animation.FuncAnimation(fig, update, frames=20, interval=interval, repeat=True) # More frames
-        st.experimental_rerun()  # Force Streamlit to update
         return ani
     
     parsed_map = parse_wardley_map(st.session_state.map_text)
