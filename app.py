@@ -700,9 +700,14 @@ elif selected == "Animate Map":
         st.session_state.ani = animation.FuncAnimation(fig, update, frames=20, interval=interval, repeat=True) # More frames
         return st.session_state.ani
     
+    from matplotlib.animation import PillowWriter  # Import PillowWriter
+
     parsed_map = parse_wardley_map(st.session_state.map_text)
     ani = animate_wardley_map(parsed_map)
 
-    # Display animation in Streamlit
-    ani_html = st.session_state.ani.to_jshtml()
-    components.html(ani_html, height=800)
+    # Save animation as GIF
+    gif_filename = "wardley_map_animation.gif"
+    ani.save(gif_filename, writer=PillowWriter(fps=10))  # Adjust fps as needed
+
+    # Display GIF in Streamlit
+    st.image(gif_filename)
