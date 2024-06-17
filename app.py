@@ -56,6 +56,9 @@ if "map_text" not in st.session_state:
 if "current_map_id" not in st.session_state:
     st.session_state["current_map_id"] = []
 
+if "ani" not in st.session_state:
+    st.session_state.ani = []
+
 with st.sidebar:
     selected = option_menu(
         "Choose conversion",
@@ -694,12 +697,12 @@ elif selected == "Animate Map":
                 pos[node] = (pos[node][0] + 0.01 * num, pos[node][1])  
             nx.draw(G, pos, ax=ax, node_color=colors, with_labels=True)
     
-        ani = animation.FuncAnimation(fig, update, frames=20, interval=interval, repeat=True) # More frames
+        st.session_state.ani = animation.FuncAnimation(fig, update, frames=20, interval=interval, repeat=True) # More frames
         return ani
     
     parsed_map = parse_wardley_map(st.session_state.map_text)
     ani = animate_wardley_map(parsed_map)
 
     # Display animation in Streamlit
-    ani_html = ani.to_jshtml()
+    ani_html = st.session_state.ani.to_jshtml()
     components.html(ani_html, height=800)
