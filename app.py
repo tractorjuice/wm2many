@@ -6,6 +6,8 @@ from pyvis.network import Network
 import yaml
 import networkx as nx
 from github import Github
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 from wardley_map import (
     create_wardley_map_plot,
     get_owm_map,
@@ -63,8 +65,9 @@ with st.sidebar:
             "WM to CYPHER",
             "WM to GML",
             "JSON to TOML",
+            "Animate Map"  # New option for animation
         ],
-        icons=["gear"] * 6,
+        icons=["gear"] * 7 + ["play-circle"],  # Added icon for animation
         menu_icon="robot",
         default_index=0,
     )
@@ -637,3 +640,64 @@ elif selected == "WM to YAML":
     )
 
     st.code(wardley_map_yaml, language="yaml")
+
+elif selected == "Animate Map":
+    st.title("Wardley Map Animation")
+
+    def animate_wardley_map(parsed_map, interval=500):
+        fig, ax = plt.subplots()
+
+        # Initialize the graph
+        G = nx.DiGraph()
+
+        # Define a color mapping for evolution stages
+        evolution_colors = {
+            "genesis": "#FF5733",
+            "custom": "#33FF57",
+            "product": "#3357FF",
+            "commodity": "#F333FF",
+        }
+
+        # Add nodes with stage (evolution) and visibility
+        for component in parsed_map["components"]:
+            pos_str = component.get("pos", "[0, 0]")
+            x, y = json.loads(pos_str)
+            stage = component.get(
+                "evolution", "unknown"
+            )  # Default to 'unknown' if not specified
+            node_color = evolution_colors.get(
+                stage, "#f68b24"
+            )  # Use a default color if the stage is not found
+            G.add_node(
+                component["name"],
+                stage=stage,
+                visibility=component["visibility"],
+                pos=(x, y),
+                color=node_color,
+            )
+
+        # Add edges with a check for existence of nodes
+        for link in parsed_map["links"]:
+            src, tgt = link["src"], link["tgt"]
+            if src in G and tgt in G:
+                G.add_edge(src, tgt)
+
+        pos = nx.get_node_attributes(G, 'pos')
+        colors = [G.nodes[node]['color'] for node in G]
+
+        def update(num):
+            ax.clear()
+            nx.draw(G, pos, ax=ax, node_color=colors, with_labels=True)
+            # Update node positions (if needed) for animation effect
+            for node in G.nodes:
+                pos[node] = (pos[node][0] + 0.01, pos[node][1] + 0.01 * num)
+
+        ani = animation.FuncAnimation(fig, update, frames=10, interval=interval, repeat=True)
+        return ani
+
+    parsed_map = parse_wardley_map(st.session_state.map_text)
+    ani = animate_wardley_map(parsed_map)
+    
+    st.pyplot(ani)
+
+    st.write("Animation created. You can customize the frames and interval as needed.")
