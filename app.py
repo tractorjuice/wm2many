@@ -703,11 +703,11 @@ elif selected == "Animate Map":
     from matplotlib.animation import PillowWriter  # Import PillowWriter
 
     parsed_map = parse_wardley_map(st.session_state.map_text)
-    ani = animate_wardley_map(parsed_map)
+    st.session_state.ani = animate_wardley_map(parsed_map)
 
     # Save animation as GIF
     gif_filename = "wardley_map_animation.gif"
-    ani.save(gif_filename, writer=PillowWriter(fps=10))  # Adjust fps as needed
+    st.session_state.ani.save(gif_filename, writer=PillowWriter(fps=10))  # Adjust fps as needed
 
     # Display GIF in Streamlit
     st.image(gif_filename)
