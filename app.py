@@ -686,15 +686,16 @@ elif selected == "Animate Map":
 
         pos = nx.get_node_attributes(G, 'pos')
         colors = [G.nodes[node]['color'] for node in G]
-
+    
         def update(num):
-            ax.clear()
-            nx.draw(G, pos, ax=ax, node_color=colors, with_labels=True)
-            # Update node positions (if needed) for animation effect
+            ax.clear()  # Clear axes
+            # Shift node positions horizontally
             for node in G.nodes:
-                pos[node] = (pos[node][0] + 0.01 * num, pos[node][1] + 0.01 * num)
-
-        ani = animation.FuncAnimation(fig, update, frames=10, interval=interval, repeat=True)
+                pos[node] = (pos[node][0] + 0.01 * num, pos[node][1])  
+            nx.draw(G, pos, ax=ax, node_color=colors, with_labels=True)
+    
+        ani = animation.FuncAnimation(fig, update, frames=20, interval=interval, repeat=True) # More frames
+        st.experimental_rerun()  # Force Streamlit to update
         return ani
     
     parsed_map = parse_wardley_map(st.session_state.map_text)
