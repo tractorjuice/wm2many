@@ -702,4 +702,4 @@ elif selected == "Animate Map":
 
     # Display animation in Streamlit
     ani_html = ani.to_jshtml()
-    components.html(ani_html, height=600)
+    components.html(ani_html, height=800)
