@@ -700,6 +700,6 @@ elif selected == "Animate Map":
     parsed_map = parse_wardley_map(st.session_state.map_text)
     ani = animate_wardley_map(parsed_map)
 
-    # Display animation in Streamlit (using iframe)
-    iframe_html = f'<iframe srcdoc="{ani.to_jshtml()}" width="100%" height="600px"></iframe>'
-    st.markdown(iframe_html, unsafe_allow_html=True)
+    # Display animation in Streamlit
+    ani_html = ani.to_jshtml()
+    components.html(ani_html, height=600)
