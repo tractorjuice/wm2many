@@ -698,7 +698,7 @@ elif selected == "Animate Map":
             nx.draw(G, pos, ax=ax, node_color=colors, with_labels=True)
     
         st.session_state.ani = animation.FuncAnimation(fig, update, frames=20, interval=interval, repeat=True) # More frames
-        return ani
+        return st.session_state.ani
     
     parsed_map = parse_wardley_map(st.session_state.map_text)
     ani = animate_wardley_map(parsed_map)
