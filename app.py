@@ -8,6 +8,8 @@ import networkx as nx
 from github import Github
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+from matplotlib import rc
+from IPython.display import HTML
 from wardley_map import (
     create_wardley_map_plot,
     get_owm_map,
@@ -690,14 +692,18 @@ elif selected == "Animate Map":
             nx.draw(G, pos, ax=ax, node_color=colors, with_labels=True)
             # Update node positions (if needed) for animation effect
             for node in G.nodes:
-                pos[node] = (pos[node][0] + 0.01, pos[node][1] + 0.01 * num)
+                pos[node] = (pos[node][0] + 0.01 * num, pos[node][1] + 0.01 * num)
 
         ani = animation.FuncAnimation(fig, update, frames=10, interval=interval, repeat=True)
         return ani
 
     parsed_map = parse_wardley_map(st.session_state.map_text)
     ani = animate_wardley_map(parsed_map)
-    
+
+    # Display animation in Streamlit
+    ani_html = ani.to_jshtml()
+    components.html(ani_html, height=600)
+
     st.pyplot(ani)
 
     st.write("Animation created. You can customize the frames and interval as needed.")
