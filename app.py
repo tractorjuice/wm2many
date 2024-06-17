@@ -694,7 +694,7 @@ elif selected == "Animate Map":
             ax.clear()  # Clear axes
             # Shift node positions horizontally
             for node in G.nodes:
-                pos[node] = (pos[node][0] + 0.01 * num, pos[node][1])  
+                pos[node] = (pos[node][0] + 0.1 * num, pos[node][1])  
             nx.draw(G, pos, ax=ax, node_color=colors, with_labels=True)
     
         st.session_state.ani = animation.FuncAnimation(fig, update, frames=20, interval=interval, repeat=True) # More frames
