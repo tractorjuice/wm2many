@@ -696,14 +696,9 @@ elif selected == "Animate Map":
 
         ani = animation.FuncAnimation(fig, update, frames=10, interval=interval, repeat=True)
         return ani
-
+    
     parsed_map = parse_wardley_map(st.session_state.map_text)
     ani = animate_wardley_map(parsed_map)
 
-    # Display animation in Streamlit
-    ani_html = ani.to_jshtml()
-    components.html(ani_html, height=600)
-
-    st.pyplot(ani)
-
-    st.write("Animation created. You can customize the frames and interval as needed.")
+    # Display animation in Streamlit (corrected)
+    st.markdown(f'<div style="width:100%;height:600px;">{ani.to_jshtml()}</div>', unsafe_allow_html=True)
